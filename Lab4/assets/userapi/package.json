@@ -11,7 +11,7 @@
   "license": "",
   "dependencies": {
     "express": "^4.17.1",
-    "mixme": "^0.3.5",
+    "mixme": "^0.5.4",
     "redis": "^3.0.2"
   },
   "devDependencies": {
