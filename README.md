@@ -6,4 +6,5 @@ It is meant to be a server that displays basic informations.
 ## Authors
 
 Kellian COTTART
+
 Yann MESSALATI
