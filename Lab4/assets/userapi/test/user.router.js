@@ -59,7 +59,26 @@ describe('User REST API', () => {
     })
   })
 
-  // describe('GET /user', ()=> {
-  //   // TODO Create test for the get method
-  // })
+  describe('GET /user', () => {
+    it("get a user", (done) => {
+
+      const user = {
+        username: 'sergkudinov',
+        firstname: 'Sergei',
+        lastname: 'Kudinov'
+      }
+     chai.request(app)
+        .get(`/'+${user.username}`)
+        .then((res) => {
+                chai.expect(res).to.have.status(201)
+                chai.expect(res.body.status).to.equal('success')
+                chai.expect(res.firstname).to.be.equal(user.firstname)
+                chai.expect(res.lastname).to.be.equal(user.lastname)
+                done()
+        })
+        .catch((err) => {
+           throw err
+        })
+    }) 
+  })
 })

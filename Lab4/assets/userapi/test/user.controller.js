@@ -3,7 +3,6 @@ const userController = require('../src/controllers/user')
 
 describe('User', () => {
 
-
   describe('Create', () => {
 
     it('create a new user', (done) => {
@@ -45,23 +44,40 @@ describe('User', () => {
         done()
       })
     })
+  })
 
-    // describe('Get', ()=> {
-  //   // TODO Create test for the get method
-  //   it('get a user by username', (done) => {
-  //     // 1. First, create a user to make this unit test independent from the others
-  //     // 2. Then, check if the result of the get method is correct
-  //     done()
-  //   })
-  //
-  //   // TODO Create test for the get method
-  //   it('cannot get a user when it does not exist', (done) => {
-  //     // 1. First, create a user to make this unit test independent from the others
-  //     // 2. Then, check if the result of the get method is correct
-  //     done()
-  //   })
-  //
-  // })
+
+  describe('Get', ()=> {
+
+    it('get a user by username', (done) => {
+        const user = {
+          username: 'sergkudinov',
+          firstname: 'Sergei',
+          lastname: 'Kudinov'
+        }
+        userController.create(user, (err, result) => {
+          userController.get(user.username, (err, result) => {
+          expect(err).to.not.be.equal("OK")
+          expect(result.firstname).to.be.equal("Sergei")
+          expect(result.lastname).to.be.equal("Kudinov")
+      })
+    })
+      done()
+    })
+
+    it("If a user doesn't exit", (done) => {
+      const user = {
+        username: 'kellianoy',
+        firstname: 'Kellian',
+        lastname: 'Cottart'
+      }
+      userController.get(user.username, (err, result) => {
+      expect(err).to.not.be.equal("OK")
+      expect(result).to.be.equal(null)
+      })
+      done()
+    })
+
   })
 })
 
