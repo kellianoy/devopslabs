@@ -20,7 +20,10 @@ module.exports = {
     if(!username)
       return callback(new Error("no username"), null)
     client.hgetall(username, (err, res) => {
-      if (err) return callback(err,null)
+      if (err) 
+        return callback(err, null)
+      else if (!res)
+        return callback(new Error("No user found"), null)
       callback(null, res)
     })
   }

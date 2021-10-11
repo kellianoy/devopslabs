@@ -67,7 +67,7 @@ describe('User REST API', () => {
         lastname: 'Kudinov'
       }
      chai.request(app)
-        .get(`/${user.username}`)
+        .get(`/user/${user.username}`)
         .then((res) => {
                 chai.expect(res).to.have.status(201)
                 chai.expect(res.body.status).to.equal('success')
@@ -86,7 +86,7 @@ describe('User REST API', () => {
         lastname: 'Kudinov'
       }
       chai.request(app)
-        .get(`/${user.username}`)
+        .get(`/user/${user.username}`)
         .then((res) => {
                 chai.expect(res).to.have.status(400)
                 chai.expect(res.body.status).to.equal('error')
