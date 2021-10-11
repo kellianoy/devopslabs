@@ -61,19 +61,36 @@ describe('User REST API', () => {
 
   describe('GET /user', () => {
     it("get a user", (done) => {
-
       const user = {
         username: 'sergkudinov',
         firstname: 'Sergei',
         lastname: 'Kudinov'
       }
      chai.request(app)
-        .get(`/'+${user.username}`)
+        .get(`/${user.username}`)
         .then((res) => {
                 chai.expect(res).to.have.status(201)
                 chai.expect(res.body.status).to.equal('success')
-                chai.expect(res.firstname).to.be.equal(user.firstname)
-                chai.expect(res.lastname).to.be.equal(user.lastname)
+                chai.expect(res).to.be.json
+                done()
+        })
+        .catch((err) => {
+           throw err
+        })
+    }) 
+
+    it("get a user that doesn't exist", (done) => {
+      const user = {
+        username: 'sergkp',
+        firstname: 'Serggi',
+        lastname: 'Kudinov'
+      }
+      chai.request(app)
+        .get(`/${user.username}`)
+        .then((res) => {
+                chai.expect(res).to.have.status(400)
+                chai.expect(res.body.status).to.equal('error')
+                chai.expect(res).to.be.json
                 done()
         })
         .catch((err) => {
