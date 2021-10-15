@@ -24,3 +24,7 @@ It is only about sending data on git and creating a repository.
 ### Lab 3
 
 Vagrant installation with Vagrantfile, making the setup for ansible and VM Box emulation of installations.
+
+### Lab 4
+
+Implementing tests in the db implementation functions.
