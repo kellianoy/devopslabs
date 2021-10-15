@@ -1,8 +1,9 @@
 const { expect } = require('chai')
 const userController = require('../src/controllers/user')
+const client=require('../src/dbClient')
 
-beforeEach( async () => {
-    await client.flushdb()
+beforeEach( () => {
+    client.flushdb()
  })
 
 describe('User', () => {
