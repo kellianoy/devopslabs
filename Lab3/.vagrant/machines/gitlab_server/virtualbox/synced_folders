@@ -1,1 +1,0 @@
-{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"C:/Users/RiseT/Documents/Algorithmes/SI/DevOps/ece-devops-2021-fall/courses/devops/modules/03.infrustructure-as-code/assets/part-2","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}

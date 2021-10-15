@@ -1,30 +1,28 @@
-# Devopslab
+# Advanced Web Repository
 
-This is the git repo concerning the lab sessions in devOps and SRE.
-This class is supervised by KUDINOV Sergei.
+Hello. This is the repository for the DevOps class held by:
 
-## Authors
+KUDINOV Sergei
 
-We are two ECE Paris Students :
+## Project
 
-Kellian COTTART
+### Authors
 
-Yann MESSALATI
+We're two members of ING 4 SI Inter at ECE Paris : 
 
-## Labs
+MESSALATI Yann
 
-### Lab 1
+COTTART Kellian
 
-It is meant to be a server that displays basic informations. It is only meant as a test of NodeJs.
+### Module 4
 
-### Lab 2
+1. Install NPM, NodeJs and redis
+2. Open your terminal where you want to download the project
+3. Clone the repository using `git clone https://github.com/kellianoy/devopslabs`
+4. Go to `Labs4`
+5. Install the dependencies using `npm install`
+6. Run the tests using `npm test`
 
-It is only about sending data on git and creating a repository.
+## About the repo
 
-### Lab 3
-
-Vagrant installation with Vagrantfile, making the setup for ansible and VM Box emulation of installations.
-
-### Lab 4
-
-Implementing tests in the db implementation functions.
+Here will be linked every lab for the semester.
