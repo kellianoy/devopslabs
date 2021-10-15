@@ -1,10 +1,14 @@
 const { expect } = require('chai')
 const userController = require('../src/controllers/user')
 
+beforeEach( async () => {
+    await client.flushdb()
+ })
+
 describe('User', () => {
 
   describe('Create', () => {
-
+    
     it('create a new user', (done) => {
       const user = {
         username: 'sergkudinov',
@@ -66,12 +70,7 @@ describe('User', () => {
     })
 
     it("If a user doesn't exit", (done) => {
-      const user = {
-        username: 'kellianoy',
-        firstname: 'Kellian',
-        lastname: 'Cottart'
-      }
-      userController.get(user.username, (err, result) => {
+      userController.get('noUser', (err, result) => {
       expect(err).to.not.be.equal("OK")
       expect(result).to.be.equal(null)
       })
