@@ -27,7 +27,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
         with: 
-            repository: 'https://github.com/kellianoy/devopslabs'
+            repository: 'kellianoy/devopslabs'
 
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
