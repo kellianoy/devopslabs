@@ -37,10 +37,11 @@ jobs:
         # Runs a script that creates a Redis client, populates
         # the client with data, and retrieves data
         run: redis-server
+        
       - name: Try out the tests
         run: npm test
     
-      - name: Connect to Redis
+      - name: try dbClient
         run: node src/dbClient.js
         env:
           # The hostname used to communicate with the Redis service container
