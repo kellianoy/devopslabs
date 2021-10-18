@@ -37,8 +37,11 @@ jobs:
         # Runs a script that creates a Redis client, populates
         # the client with data, and retrieves data
         run: npm run build --if-present
-      - run: npm test
-        # Environment variable used by the `client.js` script to create a new Redis client.
+      - name: Try out the tests
+        run: npm test
+    
+      - name: Connect to Redis
+        run: node src/dbClient.js
         env:
           # The hostname used to communicate with the Redis service container
           REDIS_HOST: redis
