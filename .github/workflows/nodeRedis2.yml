@@ -1,4 +1,4 @@
-name: Redis runner job
+name: Redis with docker and tests
 on: push
 
 jobs:
@@ -44,4 +44,7 @@ jobs:
           REDIS_HOST: localhost
           # The default Redis port
           REDIS_PORT: 6379
-      - run: npm test
+      - name : Building if it exists
+        run: npm build --if-exists
+      - name : Run tests locally
+        run: npm test
