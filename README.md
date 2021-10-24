@@ -14,14 +14,9 @@ MESSALATI Yann
 
 COTTART Kellian
 
-### Module 4
+### Module 5
 
-1. Install NPM, NodeJs and redis
-2. Open your terminal where you want to download the project
-3. Clone the repository using `git clone https://github.com/kellianoy/devopslabs`
-4. Go to `Labs4`
-5. Install the dependencies using `npm install`
-6. Run the tests using `npm test`
+Docker
 
 ## About the repo
 
