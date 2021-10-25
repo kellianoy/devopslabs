@@ -3,15 +3,16 @@ version: '3'
 services:
   redis:
     image: redis
-    environment:
-     REDIS_HOST: "127.0.0.1"
-     REDIS_PORT: 6379
+    ports: 
+     - "6379:6379"
+    volumes:
+     - /var/data:/data
   web:
+    image: docker-test-compose
     depends_on:
        - redis
-    build: .
     ports:
       - "5000:8080"
     environment:
-     REDIS_HOST: "127.0.0.1"
+     REDIS_HOST: redis
      REDIS_PORT: 6379
