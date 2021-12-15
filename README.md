@@ -1,68 +1,28 @@
-# User API web application
+# Advanced Web Repository
 
-It is a basic NodeJS web application exposing REST API that creates and stores user parameters in [Redis database](https://redis.io/).
+Hello. This is the repository for the DevOps class held by:
 
-## Functionality
+KUDINOV Sergei
 
-1. Start a web server
-2. Create a user
+## Project
 
-## Installation
+### Authors
 
-This application is written on NodeJS and it uses Redis database.
+We're two members of ING 4 SI Inter at ECE Paris : 
 
-1. [Install NodeJS](https://nodejs.org/en/download/)
+MESSALATI Yann
 
-2. [Install Redis](https://redis.io/download)
+COTTART Kellian
 
-3. Install application
+### Module 4
 
-Go to the root directory of the application (where `package.json` file located) and run:
+1. Install NPM, NodeJs and redis
+2. Open your terminal where you want to download the project
+3. Clone the repository using `git clone https://github.com/kellianoy/devopslabs`
+4. Go to `Labs4`
+5. Install the dependencies using `npm install`
+6. Run the tests using `npm test`
 
-```
-npm install 
-```
+## About the repo
 
-## Usage
-
-1. Start a web server
-
-From the root directory of the project run:
-
-```
-npm start
-```
-
-It will start a web server available in your browser at http://localhost:3000.
-
-2. Create a user
-
-Send a POST (REST protocol) request using terminal:
-
-```bash
-curl --header "Content-Type: application/json" \
-  --request POST \
-  --data '{"username":"sergkudinov","firstname":"sergei","lastname":"kudinov"}' \
-  http://localhost:3000/user
-```
-
-It will output:
-
-```
-{"status":"success","msg":"OK"}
-```
-
-Another way to test your REST API is to use [Postman](https://www.postman.com/).
-
-## Testing
-
-From the root directory of the project, run:
-
-```
-npm test
-```
-
-## Author
-
-Sergei Kudinov   
-sergei@adaltas.com
+Here will be linked every lab for the semester.

@@ -10,16 +10,9 @@ module.exports = {
       firstname: user.firstname,
       lastname: user.lastname,
     }
-    client.hgetall(user.username, (err, res) => {
-      if(res)
-        return callback(new Error("User already exists"), null)
-      else if(!res)
-        client.hmset(user.username, userObj, (err, res) => {
-          if (err) return callback(err, null)
-          callback(null, res) // Return callback
-        })
-      else
-        callback(err, null)
+    client.hmset(user.username, userObj, (err, res) => {
+        if (err) return callback(err, null)
+        callback(null, res) // Return callback
     })
   },
   

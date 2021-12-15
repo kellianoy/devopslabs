@@ -11,9 +11,6 @@ describe('User REST API', () => {
   before(() => {
     client = require('../src/dbClient')
   })
-  beforeEach( () => {
-    client.flushdb()
- })
   
   after(()=> {
     app.close()
@@ -69,34 +66,24 @@ describe('User REST API', () => {
         firstname: 'Sergei',
         lastname: 'Kudinov'
       }
-      chai.request(app)
-        .post('/user')
-        .send(user)
+     chai.request(app)
+        .get(`/user/${user.username}`)
         .then((res) => {
-          chai.request(app)
-            .get(`/user/${user.username}`)
-            .then((res) => {
-                    chai.expect(res).to.have.status(201)
-                    chai.expect(res.body.status).to.equal('success')
-                    chai.expect(res).to.be.json
-                    done()
-            })
-            .catch((err) => {
-              throw err
-            })
+                chai.expect(res).to.have.status(201)
+                chai.expect(res.body.status).to.equal('success')
+                chai.expect(res).to.be.json
+                done()
         })
         .catch((err) => {
            throw err
         })
-      
-     
     }) 
 
-    it("cannot a user that doesn't exist", (done) => {
+    it("get a user that doesn't exist", (done) => {
       const user = {
-        username: 'invalid',
-        firstname: 'invalid',
-        lastname: 'invalid'
+        username: 'sergkp',
+        firstname: 'Serggi',
+        lastname: 'Kudinov'
       }
       chai.request(app)
         .get(`/user/${user.username}`)
