@@ -1,5 +1,7 @@
 name: Redis with docker and tests
-on: push
+on: 
+   - push
+   - pull_request
 
 jobs:
   # Label of the runner job
@@ -22,30 +24,33 @@ jobs:
         ports:
           # Maps port 6379 on service container to the host
           - 6379:6379
-
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
     steps:
       # Downloads a copy of the code in your repository before running CI tests
-      - name: Check out repository code
-        uses: actions/checkout@v2
-
-      # Performs a clean installation of all dependencies in the `package.json` file
-      # For more information, see https://docs.npmjs.com/cli/ci.html
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: userapi/package.json
+        # Install dependencies of the project
       - name: Install dependencies
-        run: npm ci
-
+        run: npm i
+        working-directory: userapi
+        
       - name: Connect to Redis
-        # Runs a script that creates a Redis client, populates
-        # the client with data, and retrieves data
-        run: node client.js
-        # Environment variable used by the `client.js` script to create
-        # a new Redis client.
         env:
           # The hostname used to communicate with the Redis service container
           REDIS_HOST: localhost
           # The default Redis port
           REDIS_PORT: 6379
+          
       - name : Building if it exists
         run: npm run build --if-present
+        working-directory: userapi
         
       - name : Run tests locally
         run: npm test
+        working-directory: userapi
