@@ -42,7 +42,7 @@ jobs:
         working-directory: userapi
         
       - name: Connect to Redis
-        run: redis-server
+        run: node src/dbClient.js
         env:
           # The hostname used to communicate with the Redis service container
           REDIS_HOST: localhost
