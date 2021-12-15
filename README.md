@@ -4,9 +4,9 @@ Hello. This is the repository for the DevOps project held by:
 
 KUDINOV Sergei
 
-## Project
+# Project
 
-### Authors
+## Authors
 
 We're two members of ING 4 SI Inter at ECE Paris : 
 
@@ -14,26 +14,26 @@ MESSALATI Yann
 
 COTTART Kellian
 
-### Features
+## Features
 
-#### 1. Web Application
+### 1. Web Application
 
 We created a web application using NodeJS storing data inside of a Redis database. 
 This web application uses tests that are located inside of the `test` folder.
 
 This application is the same as in module 04, with all of the "TODO" sections implemented.
 
-#### 2. CI/CD Pipeline
+### 2. CI/CD Pipeline
 
 //Yann TODO
 
-#### 3. Vagrant, IaC
+### 3. Vagrant, IaC
 
 //Yann TODO
 
-#### 4. Build a docker image of the web app
+### 4. Build a docker image of the web app
 
-##### Create the Dockerfile
+#### Create the Dockerfile
 
 * Write a Dockerfile in the main folder of the repository defining the parent image, working dir and instructions to create the image
 
@@ -43,7 +43,7 @@ This application is the same as in module 04, with all of the "TODO" sections im
 
 * Check if it works going to `localhost:3000` or by running `docker ps`. Cool, it does.
 
-##### Upload the image
+#### Upload the image
 
 * First, we created a repo on docker hub
 
