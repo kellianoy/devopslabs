@@ -7,10 +7,13 @@ ADD ./userapi /app/
 # Set the working directory
 WORKDIR /app
 
+# Copy package.json
+COPY ./userapi/package*.json ./
+
 # Install dependancies
 RUN npm i
 
-# Copy everything form host to docker
+# Copy everything from host to docker
 COPY . .
 
 # Expose the port we want 

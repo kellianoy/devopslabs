@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  redis:
+    container_name: db-redis
+    # Alpine Linux is much smaller than most distribution base images
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    # Create a volume
+    volumes:
+      - .:/volumes
+  web:
+    container_name: web-app
+    # Dependancy
+    depends_on:
+       - redis
+    # Pulling the image from the repo
+    image: "kellianoy/devops-project-app:latest"  
+    ports:
+      - "3000:3000"
+    # Create a volume
+    volumes:
+      - .:/volumes
+    links: 
+      - redis

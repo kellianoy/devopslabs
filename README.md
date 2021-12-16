@@ -35,7 +35,9 @@ This application is the same as in module 04, with all of the "TODO" sections im
 
 #### Create the Dockerfile
 
-* Write a Dockerfile in the main folder of the repository defining the parent image, working dir and instructions to create the image
+* Write a `Dockerfile` in the main folder of the repository defining the parent image, working dir and instructions to create the image
+
+* Write a `.dockerignore` to be sure not to take unwanted data
 
 * Build the image using `docker build -t yann-kellian-app .`
 
@@ -53,4 +55,14 @@ This application is the same as in module 04, with all of the "TODO" sections im
 
 * We verified that the repo was created and full. 
 Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-app
+
+### 5. Docker-compose
+
+* We need to create a `docker-compose.yaml` file to orchestrate our containers. Let's start by writing it with 2 images: 
+	* `redis:alpine` (because it takes less place, and we don't need much of redis) 
+	* The newly-created `devops-project-app` image.
+
+* Run `docker-compose up`. Congratulations, it works !
+
+### 6. Kubernetes
 
