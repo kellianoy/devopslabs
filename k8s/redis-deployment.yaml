@@ -1,0 +1,31 @@
+#Creating a deployment of redis:alpine
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  selector:
+    matchLabels:
+      app: node-redis
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: node-redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:alpine
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 6379
+        #  Our redis storage to store data
+        volumeMounts:
+        - name: redis-storage
+          mountPath: /data
+          readOnly: false
+      # Linking a persistentVolumeClaim
+      volumes:
+      - name: redis-storage
+        persistentVolumeClaim:
+          claimName: redis-storage

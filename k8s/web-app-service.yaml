@@ -1,0 +1,15 @@
+# Service for the web app 
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: devops-app-service
+  name: devops-app-service
+spec:
+  ports:
+  - name: "3000"
+    port: 3000
+    targetPort: 3000
+  selector:
+    app: devops-project-app
+  type: LoadBalancer

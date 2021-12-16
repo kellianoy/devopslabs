@@ -39,6 +39,6 @@ userRouter
       }
       resp.status(201).json(respObj)
     })
-  })
+})
   
 module.exports = userRouter

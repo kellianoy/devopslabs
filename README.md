@@ -37,7 +37,7 @@ This application is the same as in module 04, with all of the "TODO" sections im
 
 * Write a `Dockerfile` in the main folder of the repository defining the parent image, working dir and instructions to create the image
 
-* Write a `.dockerignore` to be sure not to take unwanted data
+* Write a `.dockerignore` to be sure not to take in unwanted data
 
 * Check if the redis connection is set to `"host": "redis"` and `"port": 6379` in `userapi\conf\default.json`. This is only for the container part because local tests need to be run with `"host": "127.0.0.1"`.
 
@@ -63,8 +63,40 @@ Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-ap
 * We need to create a `docker-compose.yaml` file to orchestrate our containers. Let's start by writing it with 2 images: 
 	* `redis:alpine` (because it takes less place, and we don't need much of redis) 
 	* The newly-created `devops-project-app` image.
-
+	* We add a volume named `redis-storage` to store our users.
+	
 * Run `docker-compose up`. Congratulations, it works !
 
+* We have to check whether or not the data volume is correct, by sending post requests to create users and getting them. To do so, we used curl :
+
+	* To create a user, you can type this command:  ```curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://localhost:3000/user/``` 
+	* To get one, type this command in the url: ```http://localhost:3000/user/kellianoy``` 
+
+* Now, we can see that the data has been persisted, even when we close the docker-compose.
+
 ### 6. Kubernetes
+
+* We started by using `Kompose` to convert our `docker-compose.yaml` to Kubernetes deployment / service files. By using the command `kompose up .` and then `kompose convert`, we generated new files allowing to do the same deployment actions that were referred in the docker-compose.
+
+* This wasn't satisfactory, but it gave us a good idea of what to have to generate a working cluster. This result didn't allow us to make a persistent data claim, so we had to rework it into a proper deployment. This includes a total of 5 files:
+	* `k8s/web-app-deployment.yaml`, that allows the deployment of one pod of our image
+	* `k8s/web-app-service.yaml`, that allows the service of our app using a loadBalancer
+	* `k8s/redis-deployment.yaml`, that allows the deployment of one pod of Redis
+	* `k8s/redis-service.yaml`, that allows the service of Redis
+	* `k8s/redis-claim.yaml`, that allows the creation of a persistentVolumeClaim to make the link between database and app, and store it.
+
+* To apply our files, we used the command `kubectl apply -f k8s/`.
+
+* Once it was lauched, we can use `minikube tunnel` to know the status of our machine
+
+* We can access the app by using `minikube service devops-app-service`
+
+* We can add a user using, as for 5., but with a modified ip ```curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://192.168.49.2:30150/user/```
+
+* Let's stop the service: `minikube stop`, and open it again: `minikube start`. Now, we go to `http://192.168.49.2:30150/user/kellianoy` and we confirm that we have still our user in the database, meaning that it has been properly setup !
+
+### 7. Istios
+
+
+
 

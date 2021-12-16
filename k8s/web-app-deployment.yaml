@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: devops-project-app
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: devops-project-app
+    spec:
+      containers:
+      - name: devops-project-app
+        image: kellianoy/devops-project-app:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        resources: {}
+        # data volume from where devops-project-app read data written by Redis
+        volumeMounts:
+        - name: redis-storage 
+          mountPath: /data
+          readOnly: false
+      # Linking our persistentVolumeClaim
+      volumes:
+      - name: redis-storage
+        persistentVolumeClaim:
+          claimName: redis-storage

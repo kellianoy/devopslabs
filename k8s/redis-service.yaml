@@ -1,0 +1,15 @@
+# Creating a redis service and exposing port 6379 to be able to connect to the database from the pod
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: node-redis
+spec:
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: 6379
+  type: NodePort
+  selector:
+    app: node-redis

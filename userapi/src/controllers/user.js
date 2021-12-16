@@ -3,6 +3,7 @@ const client = require('../dbClient')
 module.exports = {
   create: (user, callback) => {
     // Check parameters
+    console.log(user)
     if(!user.username)
       return callback(new Error("Wrong user parameters"), null)
     // Create User schema
@@ -33,5 +34,12 @@ module.exports = {
         return callback(new Error("No user found"), null)
       callback(null, res)
     })
+  },
+
+  getAll: (callback) => {
+    client.hgetall((err, res) => {
+      return callback(null,res)
+    })
+
   }
 } 

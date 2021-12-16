@@ -1,0 +1,14 @@
+# data persistentClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-storage
+  labels:
+    app: node-redis
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      # Let's limit the amount of data
+      storage: 128Mi
