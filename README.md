@@ -4,9 +4,11 @@ Hello. This is the repository for the DevOps project held by:
 
 KUDINOV Sergei
 
-# Project
+# Table of Contents
 
-## Authors
+[TOC]
+
+# Authors
 
 We're two members of ING 4 SI Inter at ECE Paris : 
 
@@ -14,9 +16,9 @@ MESSALATI Yann
 
 COTTART Kellian
 
-## Features
+# Features
 
-### 1. Web Application
+## 1. Web Application
 
 We created a web application using NodeJS storing data inside of a Redis database. 
 This web application uses tests that are located inside of the `test` folder.
@@ -25,9 +27,9 @@ This application is the same as in module 04, with all of the "TODO" sections im
 
 We also added the capacity to see if the connection with the database was succesfully executed by showing a "**connected**" or "**disconnected**" message on the front page.
 
-### 2. CI/CD Pipeline
+## 2. CI/CD Pipeline
 
-#### CI
+### CI
 
 First, we created some unit-tests inside of our app, allowing for a test suite to be created.
 
@@ -41,15 +43,15 @@ We could have implemented it on every push of all branches, however GithubAction
 
 If it fails, it sends us an email, warning us about the failing of these tests.
 
-#### CD
+### CD
 
-### 3. Vagrant, IaC
+## 3. Vagrant, IaC
 
 //Yann TODO
 
-### 4. Build a docker image of the web app
+## 4. Build a docker image of the web app
 
-#### Create the Dockerfile
+### Create the Dockerfile
 
 * Write a `Dockerfile` in the main folder of the repository defining the parent image, working dir and instructions to create the image
 
@@ -63,7 +65,7 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 
 * Check if it works going to `localhost:3000` or by running `docker ps`. Cool, it does.
 
-#### Upload the image
+### Upload the image
 
 * First, we created a repo on docker hub
 
@@ -74,7 +76,7 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 * We verified that the repo was created and full. 
 Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-app
 
-### 5. Docker-compose
+## 5. Docker-compose
 
 * We need to create a `docker-compose.yaml` file to orchestrate our containers. Let's start by writing it with 2 images: 
 	* `redis:alpine` (because it takes less place, and we don't need much of redis) 
@@ -90,7 +92,7 @@ Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-ap
 
 * Now, we can see that the data has been persisted, even when we close the docker-compose.
 
-### 6. Kubernetes
+## 6. Kubernetes
 
 * We started by using `Kompose` to convert our `docker-compose.yaml` to Kubernetes deployment / service files. By using the command `kompose up .` and then `kompose convert`, we generated new files allowing to do the same deployment actions that were referred in the docker-compose.
 
@@ -111,7 +113,7 @@ Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-ap
 
 * Let's stop the service: `minikube stop`, and open it again: `minikube start`. Now, we go to `http://192.168.49.2:30150/user/kellianoy` and we confirm that we have still our user in the database, meaning that it has been properly setup !
 
-### 7. Istios
+## 7. Istios
 
 
 
