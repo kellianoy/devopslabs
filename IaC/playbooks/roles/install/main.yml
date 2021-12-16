@@ -1,0 +1,6 @@
+---
+- name: Install required packages
+  yum:
+    name:
+      - nodejs14
+    state: latest
