@@ -4,10 +4,6 @@ Hello. This is the repository for the DevOps project held by:
 
 KUDINOV Sergei
 
-# Table of Contents
-
-[TOC]
-
 # Authors
 
 We're two members of ING 4 SI Inter at ECE Paris : 
