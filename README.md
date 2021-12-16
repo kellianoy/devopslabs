@@ -23,6 +23,8 @@ This web application uses tests that are located inside of the `test` folder.
 
 This application is the same as in module 04, with all of the "TODO" sections implemented.
 
+We also added the capacity to see if the connection with the database was succesfully executed by showing a "**connected**" or "**disconnected**" message on the front page.
+
 ### 2. CI/CD Pipeline
 
 #### CI
