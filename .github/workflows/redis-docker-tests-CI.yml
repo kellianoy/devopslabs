@@ -1,8 +1,9 @@
 name: Redis with docker and tests
-on: 
-   - push
-   - pull_request
-
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 jobs:
   # Label of the runner job
   runner-job:
