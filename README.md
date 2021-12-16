@@ -25,7 +25,21 @@ This application is the same as in module 04, with all of the "TODO" sections im
 
 ### 2. CI/CD Pipeline
 
-//Yann TODO
+#### CI
+
+First, we created some unit-tests inside of our app, allowing for a test suite to be created.
+
+To implement Continuous Integration, we used GithubActions. We created the `.github/worflows/redis-docker-tests-CI.yml` file.
+
+Using a Redis image and the repository, we set up the file to be able to run a Ubuntu using Redis, as well as a NodeJS basic system to host our file. This allows our unit-tests to run in the background on every push on the main branch.
+
+We're checking if our app works on node 14 and 16 using a matrix strategy.
+
+We could have implemented it on every push of all branches, however GithubActions is limited in its duration of use (only up to 3000 minutes) and we're almost over the limit, so we restrained it.
+
+If it fails, it sends us an email, warning us about the failing of these tests.
+
+#### CD
 
 ### 3. Vagrant, IaC
 
