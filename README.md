@@ -39,7 +39,7 @@ This application is the same as in module 04, with all of the "TODO" sections im
 
 * Write a `.dockerignore` to be sure not to take unwanted data
 
-* Check if the redis connection is set to `"host": "redis"` and `"port": 6379` in `userapi\conf\default.json`. This is only for the container part because local tests need to be run with `"host": "127.0.0.1".
+* Check if the redis connection is set to `"host": "redis"` and `"port": 6379` in `userapi\conf\default.json`. This is only for the container part because local tests need to be run with `"host": "127.0.0.1"`.
 
 * Build the image using `docker build -t yann-kellian-app .`
 
