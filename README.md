@@ -101,16 +101,41 @@ Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-ap
 
 * To apply our files, we used the command `kubectl apply -f k8s/`.
 
-* Once it was lauched, we can use `minikube tunnel` to know the status of our machine
+* To get all the different things that were created, we have different commands:
+	*`kubectl get pods`
+	*`kubectl get deployments`
+	*`kubectl get services`
 
-* We can access the app by using `minikube service devops-app-service`
+* Once it was lauched, we can use `minikube tunnel` to know the status of our machine.
+
+* We can access the app by using `minikube service devops-app-service`.
 
 * We can add a user using, as for 5., but with a modified ip ```curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://192.168.49.2:30150/user/```
 
 * Let's stop the service: `minikube stop`, and open it again: `minikube start`. Now, we go to `http://192.168.49.2:30150/user/kellianoy` and we confirm that we have still our user in the database, meaning that it has been properly setup !
 
-## 7. Istios
+## 7. Istio
 
+### Istio download
 
+* We first need to setup the resources allowed to minikube. Our machines aren't really performance-oriented, so we have few elements to give. We setup minikube using `minikube start --cpus 4 --memory 4096`.
 
+* Now, we have to download Istio on the official website using this page : https://istio.io/latest/docs/setup/getting-started/#download
 
+* Once it is downloaded, we have to add Istio to our path, using `cd istio` (depending on the name of the extracted folder) and then `export PATH=$PWD/bin:$PATH`. We can now do `istioctl` to validate the proper download and setup of Istio.
+
+### Istio installation
+
+* To install Itio, just enter `istioctl install`. You can check the installation by doing `kubectl get ns` which gives us all the namespaces. We can see that **istio-system** is present in the list. It also creates istio pods.
+
+### Istio deployment using automatic envoy proxies
+
+* First, we need to label the desired namespace of our kubernetes cluster as **istio-injection**, for istio to know which pods to implement the envoy proxies on. To do this, we have the command `kubectl label namespace default istio-injection=enabled`. To confirm it worked properly, we can show `kubectl get nes default --show-labels`. Great, everything is here.
+
+* We can now delete all our elements in our cluster and restart them using:
+	* `kubectl delete -f /k8s` 
+	* `kubectl apply -f /k8s` 
+
+> Note: This is done to ensure that the labelling is applied to every single element.
+
+*
