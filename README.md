@@ -69,8 +69,7 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 
 * We pushed our file using `docker push kellianoy/devops-project-app`
 
-* We verified that the repo was created and full. 
-Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-app
+* We verified that the repo was created and full. Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-app
 
 ## 5. Docker-compose
 
@@ -83,8 +82,17 @@ Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-ap
 
 * We have to check whether or not the data volume is correct, by sending post requests to create users and getting them. To do so, we used curl :
 
-	* To create a user, you can type this command:  ```curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://localhost:3000/user/``` 
-	* To get one, type this command in the url: ```http://localhost:3000/user/kellianoy``` 
+	* To create a user, you can type this command:  
+	
+	```
+	curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://localhost:3000/user/
+	```
+	
+	* To get one, type this command in the url: 
+	
+	```
+	http://localhost:3000/user/kellianoy
+	``` 
 
 * Now, we can see that the data has been persisted, even when we close the docker-compose.
 
@@ -110,7 +118,11 @@ Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-ap
 
 * We can access the app by using `minikube service devops-app-service`.
 
-* We can add a user using, as for 5., but with a modified ip ```curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://192.168.49.2:30150/user/```
+* We can add a user using, as for 5., but with a modified ip and port:
+
+```
+curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://192.168.49.2:30150/user/
+```
 
 * Let's stop the service: `minikube stop`, and open it again: `minikube start`. Now, we go to `http://192.168.49.2:30150/user/kellianoy` and we confirm that we have still our user in the database, meaning that it has been properly setup !
 
@@ -120,17 +132,36 @@ Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-ap
 
 * We first need to setup the resources allowed to minikube. Our machines aren't really performance-oriented, so we have few elements to give. We setup minikube using `minikube start --cpus 4 --memory 4096`.
 
+```
+minikube start --cpus 4 --memory 4096
+```
+
 * Now, we have to download Istio on the official website using this page : https://istio.io/latest/docs/setup/getting-started/#download
 
 * Once it is downloaded, we have to add Istio to our path, using `cd istio` (depending on the name of the extracted folder) and then `export PATH=$PWD/bin:$PATH`. We can now do `istioctl` to validate the proper download and setup of Istio.
+
+```
+cd istio
+export PATH=$PWD/bin:$PATH
+istioctl
+```
 
 ### Istio installation
 
 * To install Itio, just enter `istioctl install`. You can check the installation by doing `kubectl get ns` which gives us all the namespaces. We can see that **istio-system** is present in the list. It also creates istio pods.
 
+```
+istioctl install
+```
+
 ### Istio deployment using automatic envoy proxies
 
 * First, we need to label the desired namespace of our kubernetes cluster as **istio-injection**, for istio to know which pods to implement the envoy proxies on. To do this, we have the command `kubectl label namespace default istio-injection=enabled`. To confirm it worked properly, we can show `kubectl get nes default --show-labels`. Great, everything is here.
+
+```
+kubectl label namespace default istio-injection=enabled
+kubectl get nes default --show-labels
+```
 
 * We can now delete all our elements in our cluster and restart them using:
 	* `kubectl delete -f /k8s` 
@@ -138,4 +169,22 @@ Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-ap
 
 > Note: This is done to ensure that the labelling is applied to every single element.
 
-*
+### Kiali dashboarding (WIP)
+
+* To install kiali, we have to add addons to our cluster `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/kiali.yaml`.
+
+```
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/kiali.yaml
+```
+
+* To check the installation, we can use `kubectl -n istio-system get svc kiali`
+
+```
+kubectl -n istio-system get svc kiali
+```
+
+* Go to the kiali dashboard `istioctl dashboard kiali`
+
+```
+istioctl dashboard kiali
+```
