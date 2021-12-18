@@ -15,7 +15,7 @@ services:
     depends_on:
        - redis
     # Pulling the image from the repo
-    image: "kellianoy/devops-project-app:latest"  
+    image: "kellianoy/devops-project-app:v1"  
     ports:
       - "3000:3000"
     # Create a volume

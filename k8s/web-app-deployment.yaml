@@ -1,27 +1,74 @@
+# For the v1
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapp-deployment
+  name: webapp-deployment-v1
 spec:
   selector:
     matchLabels:
-      app: devops-project-app
+      app: devops-project-app-v1
   replicas: 1
   strategy:
     type: Recreate
   template:
     metadata:
-      creationTimestamp: null
       labels:
-        app: devops-project-app
+        app: devops-project-app-v1
     spec:
       containers:
       - name: devops-project-app
-        image: kellianoy/devops-project-app:latest
+        image: kellianoy/devops-project-app:v1
         imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
         ports:
         - containerPort: 3000
-        resources: {}
+        # data volume from where devops-project-app read data written by Redis
+        volumeMounts:
+        - name: redis-storage 
+          mountPath: /data
+          readOnly: false
+      # Linking our persistentVolumeClaim
+      volumes:
+      - name: redis-storage
+        persistentVolumeClaim:
+          claimName: redis-storage
+---
+# For the v2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment-v2
+spec:
+  selector:
+    matchLabels:
+      app: devops-project-app-v2
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: devops-project-app-v2
+    spec:
+      containers:
+      - name: devops-project-app
+        image: kellianoy/devops-project-app:v2
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
         # data volume from where devops-project-app read data written by Redis
         volumeMounts:
         - name: redis-storage 

@@ -8,6 +8,8 @@ spec:
     matchLabels:
       app: node-redis
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -17,6 +19,13 @@ spec:
       - name: redis
         image: redis:alpine
         imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
         ports:
         - containerPort: 6379
         #  Our redis storage to store data
@@ -24,6 +33,7 @@ spec:
         - name: redis-storage
           mountPath: /data
           readOnly: false
+      restartPolicy: Always
       # Linking a persistentVolumeClaim
       volumes:
       - name: redis-storage

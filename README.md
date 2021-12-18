@@ -4,6 +4,32 @@ Hello. This is the repository for the DevOps project held by:
 
 KUDINOV Sergei
 
+# Table of Contents
+
+- [Dev Ops Project Repository](#dev-ops-project-repository)
+- [Table of Contents](#table-of-contents)
+- [Authors](#authors)
+- [Features](#features)
+	- [1. Web Application](#1-web-application)
+	- [2. CI/CD Pipeline](#2-cicd-pipeline)
+		- [CI](#ci)
+		- [CD](#cd)
+	- [3. Vagrant, IaC](#3-vagrant-iac)
+	- [4. Build a docker image of the web app](#4-build-a-docker-image-of-the-web-app)
+		- [Create the Dockerfile](#create-the-dockerfile)
+		- [Upload the image](#upload-the-image)
+	- [5. Docker-compose](#5-docker-compose)
+	- [6. Kubernetes](#6-kubernetes)
+	- [7. Istio](#7-istio)
+		- [Istio download](#istio-download)
+		- [Istio installation](#istio-installation)
+		- [Istio deployment using automatic envoy proxies](#istio-deployment-using-automatic-envoy-proxies)
+		- [Traffic management - Open the application to outside traffic](#traffic-management---open-the-application-to-outside-traffic)
+		- [Traffic shifting](#traffic-shifting)
+	- [Monitoring](#monitoring)
+		- [Kiali dashboarding (WIP)](#kiali-dashboarding-wip)
+		- [Prometheus (WIP)](#prometheus-wip)
+
 # Authors
 
 We're two members of ING 4 SI Inter at ECE Paris : 
@@ -14,6 +40,8 @@ COTTART Kellian
 
 # Features
 
+
+
 ## 1. Web Application
 
 We created a web application using NodeJS storing data inside of a Redis database. 
@@ -21,7 +49,9 @@ This web application uses tests that are located inside of the `test` folder.
 
 This application is the same as in module 04, with all of the "TODO" sections implemented.
 
-We also added the capacity to see if the connection with the database was succesfully executed by showing a "**connected**" or "**disconnected**" message on the front page.
+We also added the capacity to see if the connection with the database was succesfully executed by showing a "**redis is connected**" or "**redis not connected**" message on the front page. This was implemented thanks to **zsimo's node redis retry strategy**.
+
+> https://github.com/zsimo/node-redis-retry-strategy
 
 ## 2. CI/CD Pipeline
 
@@ -124,9 +154,18 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://192.168.49.2:30150/user/
 ```
 
+> Note : If you try to do these steps again, you will have a different port number and ip.
+
 * Let's stop the service: `minikube stop`, and open it again: `minikube start`. Now, we go to `http://192.168.49.2:30150/user/kellianoy` and we confirm that we have still our user in the database, meaning that it has been properly setup !
 
 ## 7. Istio
+
+For this part, we are using the official Istio documentation :
+
+1. https://istio.io/latest/docs/setup/getting-started/
+2. https://istio.io/latest/docs/examples/microservices-istio/setup-kubernetes-cluster/
+3. https://istio.io/latest/docs/tasks/traffic-management/traffic-shifting/
+4. https://istio.io/latest/docs/tasks/traffic-management/request-routing/
 
 ### Istio download
 
@@ -148,26 +187,76 @@ istioctl
 
 ### Istio installation
 
-* To install Itio, just enter `istioctl install`. You can check the installation by doing `kubectl get ns` which gives us all the namespaces. We can see that **istio-system** is present in the list. It also creates istio pods.
+* To install Itio, just enter `istioctl install --set profile=demo -y`. You can check the installation by doing `kubectl get ns` which gives us all the namespaces. We can see that **istio-system** is present in the list. It also creates istio pods. We decided to go with the demo profile to allow easier configuration.
 
 ```
-istioctl install
+istioctl install --set profile=demo -y
 ```
 
 ### Istio deployment using automatic envoy proxies
 
-* First, we need to label the desired namespace of our kubernetes cluster as **istio-injection**, for istio to know which pods to implement the envoy proxies on. To do this, we have the command `kubectl label namespace default istio-injection=enabled`. To confirm it worked properly, we can show `kubectl get nes default --show-labels`. Great, everything is here.
+* We can create a namespace for our kubernetes cluster, in case we have more than one.
 
 ```
-kubectl label namespace default istio-injection=enabled
-kubectl get nes default --show-labels
+kubectl create namespace devops
+```
+
+* First, we need to label the desired namespace of our kubernetes cluster as **istio-injection**, for istio to know which pods to implement the envoy proxies on. To do this, we have the command `kubectl label namespace devops istio-injection=enabled`. To confirm it worked properly, we can show `kubectl get ns devops --show-labels`. Great, everything is here.
+
+```
+kubectl label namespace devops istio-injection=enabled
+
+```
+
+```
+kubectl get ns devops --show-labels
 ```
 
 * We can now delete all our elements in our cluster and restart them using:
-	* `kubectl delete -f /k8s` 
-	* `kubectl apply -f /k8s` 
+	* `kubectl delete -f ./k8s` 
+	* `kubectl apply -f ./k8s --namespace=devops` 
 
-> Note: This is done to ensure that the labelling is applied to every single element.
+> Note: This is done to ensure that the labelling is applied to every single element. To delete the cluster, from now on, we have to use `kubectl delete -f ../k8s -n devops`.
+
+Our Istio is set up. We now need to determine the ingress IP and ports, which are the same as the result we get from `minikube service devops-app-service -n devops`.
+
+To get our gateway url from another method, we can use:
+
+```
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
+export INGRESS_HOST=$(minikube ip)
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+echo "http://$GATEWAY_URL/"
+```
+
+### Traffic management - Open the application to outside traffic
+
+After setting up Istio, we have to configure the application to allow outside traffic. To do so, we need four elements:
+
+1. Gateway
+2. Virtual Service
+3. Service Entry
+4. Destination Rules
+
+### Traffic shifting 
+
+For traffic shifting, we created new tags in our docker hub: v1 and v2, to specify which version we were on, testing if it works. Then, we created a second deployment of our app, and a new service.
+
+Traffic shifting is really easy to setup, you just have to add the weight in the destination part of a virtual service.
+
+```
+ - destination:
+        host: #Destination 1
+        subset: v1
+      weight: 80 #Percentage of people arriving here
+    - destination:
+        host: #Destination 2
+        subset: v2
+      weight: 20 #Percentage of people arriving here
+```
+
+## Monitoring
 
 ### Kiali dashboarding (WIP)
 
@@ -182,9 +271,22 @@ kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samp
 ```
 kubectl -n istio-system get svc kiali
 ```
+* Now, we need to forward the port to be able to access the Kiali dashboard:
+
+```
+kubectl port-forward svc/kiali -n istio-system 20001
+```
 
 * Go to the kiali dashboard `istioctl dashboard kiali`
 
 ```
 istioctl dashboard kiali
+```
+
+### Prometheus (WIP)
+
+* To install Prometheus, we have to add addons to our cluster `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/prometheus.yaml`.
+
+```
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/prometheus.yaml
 ```
