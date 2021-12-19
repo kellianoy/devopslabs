@@ -338,7 +338,7 @@ In kiali dashboard, we get:
 
 ![kiali-version-routing](./images/istio-kiali-version-routing.png)
 
-## Monitoring
+## 8. Monitoring
 
 ### Kiali dashboarding
 
