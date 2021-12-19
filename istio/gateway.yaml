@@ -2,10 +2,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: devops-app-gateway
-  namespace: istio-system
 spec:
   selector:
-    app: devops-project-app
+    istio: ingressgateway # use Istio default gateway implementation
   servers:
   # HTTP exposing port 80 (default)
   - port:
@@ -14,62 +13,25 @@ spec:
       protocol: HTTP
     hosts:
     - '*'
-    tls:
-      httpsRedirect: true
----
-apiVersion: networking.istio.io/v1alpha3
-kind: ServiceEntry
-metadata:
-  name: devops-web-app-default
-spec:
-  hosts:
-  - devops-web-app.default.global
-  location: MESH_INTERNAL
-  ports:
-  - name: http1
-    number: 3000
-    protocol: http
-  resolution: DNS
-  addresses:
-  - 192.168.49.2
----
-apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
-metadata:
-  name: devops-web-app
-spec:
-  host: devops-web-app.default.svc.cluster.local
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
-  subsets:
-  - name: v1
-    labels:
-      version: v1
-  - name: v2
-    labels:
-      version: v2
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: devops-app-vsc
-  namespace: devops
 spec:
   hosts:
   - '*'
   gateways:
-  - istio-system/devops-app-gateway
+  - devops-app-gateway
   http:
   - match:
     - uri:
-        prefix: /
+        exact: "/"
     route:
     - destination:
-        host: devops-web-app-v1
-      weight: 80
-    - destination:
-        host: devops-web-app-v2
-      weight: 20
+        host: devops-app-service
+        port:
+          number: 3000
+
 
 

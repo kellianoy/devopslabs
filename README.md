@@ -132,7 +132,7 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 
 * This wasn't satisfactory, but it gave us a good idea of what to have to generate a working cluster. This result didn't allow us to make a persistent data claim, so we had to rework it into a proper deployment. This includes a total of 5 files:
 	* `k8s/web-app-deployment.yaml`, that allows the deployment of one pod of our image
-	* `k8s/web-app-service.yaml`, that allows the service of our app using a loadBalancer
+	* `k8s/web-app-service.yaml`, that allows the service of our app using a loadBalancer to be accessible from our browser
 	* `k8s/redis-deployment.yaml`, that allows the deployment of one pod of Redis
 	* `k8s/redis-service.yaml`, that allows the service of Redis
 	* `k8s/redis-claim.yaml`, that allows the creation of a persistentVolumeClaim to make the link between database and app, and store it.
@@ -142,7 +142,7 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 * To get all the different things that were created, we have different commands:
 	*`kubectl get pods`
 	*`kubectl get deployments`
-	*`kubectl get services`
+	*`kubectl get services` which we parametered as type = LoadBalancer to be able to be accessed on the web browser.
 
 * Once it was lauched, we can use `minikube tunnel` to know the status of our machine.
 
@@ -160,20 +160,23 @@ curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy"
 
 ## 7. Istio
 
-For this part, we are using the official Istio documentation :
+For this part, we are using the official Istio documentation:
 
 1. https://istio.io/latest/docs/setup/getting-started/
 2. https://istio.io/latest/docs/examples/microservices-istio/setup-kubernetes-cluster/
 3. https://istio.io/latest/docs/tasks/traffic-management/traffic-shifting/
 4. https://istio.io/latest/docs/tasks/traffic-management/request-routing/
+5. https://istio.io/latest/blog/2019/multicluster-version-routing/ 
 
 ### Istio download
 
-* We first need to setup the resources allowed to minikube. Our machines aren't really performance-oriented, so we have few elements to give. We setup minikube using `minikube start --cpus 4 --memory 4096`.
+* We first need to setup the resources allowed to minikube. Let's set the config to virtualbox using `minikube config set vm-driver virtualbox`. Our machines aren't really performance-oriented, so we have few elements to give. We setup minikube ressources using `minikube start --cpus 4 --memory 4096`.
 
 ```
 minikube start --cpus 4 --memory 4096
 ```
+
+> Note: If your computer allows it, you can start minikube using `minikube start --cpus 6 --memory 8192` or more.
 
 * Now, we have to download Istio on the official website using this page : https://istio.io/latest/docs/setup/getting-started/#download
 
@@ -201,7 +204,9 @@ istioctl install --set profile=demo -y
 kubectl create namespace devops
 ```
 
-* First, we need to label the desired namespace of our kubernetes cluster as **istio-injection**, for istio to know which pods to implement the envoy proxies on. To do this, we have the command `kubectl label namespace devops istio-injection=enabled`. To confirm it worked properly, we can show `kubectl get ns devops --show-labels`. Great, everything is here.
+As we only have one, we will keep on using default.
+
+* First, we need to label the desired namespace of our kubernetes cluster as **istio-injection**, for istio to know which pods to implement the envoy proxies on. To do this, we have the command `kubectl label namespace default istio-injection=enabled`. To confirm it worked properly, we can show `kubectl get ns default --show-labels`. Great, everything is here.
 
 ```
 kubectl label namespace devops istio-injection=enabled
@@ -211,16 +216,34 @@ kubectl label namespace devops istio-injection=enabled
 ```
 kubectl get ns devops --show-labels
 ```
-
+* We changed the cluster a bit to have our service be a **ClusterIP** type rather than a **LoadBalancer** because this role will be assumed by Istio.
+  
 * We can now delete all our elements in our cluster and restart them using:
 	* `kubectl delete -f ./k8s` 
-	* `kubectl apply -f ./k8s --namespace=devops` 
+	* `kubectl apply -f ./k8s` 
 
-> Note: This is done to ensure that the labelling is applied to every single element. To delete the cluster, from now on, we have to use `kubectl delete -f ../k8s -n devops`.
+> Note: This is done to ensure that the labelling is applied to every single element.
 
-Our Istio is set up. We now need to determine the ingress IP and ports, which are the same as the result we get from `minikube service devops-app-service -n devops`.
+Now, we can check if our service has been properly deployed by trying to curl our service. We have to start by creating a link to access our service using `minikube tunnel`. Now, we need to know the cluster IP of `devops-app-service`. We can do `kubectl get services` and then, using the IP: 
 
-To get our gateway url from another method, we can use:
+```
+curl 10.101.125.13:3000
+```
+
+> Note: You can also open the web browser and put the address inside.
+
+We're having results, great ! Our Istio is set up. 
+
+### Traffic management - Open the application to outside traffic
+
+After setting up Istio, we have to configure the application to allow outside traffic. To do so, we need two elements:
+
+1. Gateway
+2. Virtual Service
+
+We created a new file called `gateway.yaml` inside of the istio folder, composed of those two elements, allowing us to create a **LoadBalancer** at the beginning of our mesh.
+
+To get our gateway url, we can use `minikube tunnel` then:
 
 ```
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
@@ -229,15 +252,17 @@ export INGRESS_HOST=$(minikube ip)
 export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
 echo "http://$GATEWAY_URL/"
 ```
+> Note: In our case, the address is http://192.168.49.2:32759/
 
-### Traffic management - Open the application to outside traffic
+We can now curl this address to check if everything is alright. Great, it works.
 
-After setting up Istio, we have to configure the application to allow outside traffic. To do so, we need four elements:
+If we want to show the traffic in a Kiali dashboard, we can use this command: 
 
-1. Gateway
-2. Virtual Service
-3. Service Entry
-4. Destination Rules
+```
+for i in $(seq 1 1000); do curl -s -o /dev/null "http://$GATEWAY_URL/"; done
+```
+
+![kiali-traffic](./images/istio-traffic.png)
 
 ### Traffic shifting 
 
@@ -250,7 +275,7 @@ Traffic shifting is really easy to setup, you just have to add the weight in the
         host: #Destination 1
         subset: v1
       weight: 80 #Percentage of people arriving here
-    - destination:
+ - destination:
         host: #Destination 2
         subset: v2
       weight: 20 #Percentage of people arriving here
