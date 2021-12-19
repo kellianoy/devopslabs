@@ -28,9 +28,15 @@ KUDINOV Sergei
 		- [Request routing](#request-routing)
 		- [Traffic shifting](#traffic-shifting)
 	- [Monitoring](#monitoring)
-		- [Kiali dashboarding (WIP)](#kiali-dashboarding-wip)
-		- [Prometheus (WIP)](#prometheus-wip)
-		- [Grafana (WIP)](#grafana-wip)
+		- [Kiali dashboarding](#kiali-dashboarding)
+			- [Installation](#installation)
+			- [Usage](#usage)
+		- [Prometheus](#prometheus)
+			- [Installation](#installation-1)
+			- [Usage](#usage-1)
+		- [Grafana](#grafana)
+			- [Installation](#installation-2)
+			- [Usage](#usage-2)
 
 # Authors
 
@@ -242,7 +248,6 @@ As we only have one, we will keep on using **default**.
 
 ```
 kubectl label namespace default istio-injection=enabled
-
 ```
 
 ```
@@ -289,7 +294,7 @@ echo "http://$GATEWAY_URL/"
 ```
 > Note: In our case, the address is http://192.168.49.2:32759/
 
-We can now curl this address to check if everything is alright. Great, it works.
+We can now curl this address to check if everything is alright. Great, it works. We can also use `kubectl -n istio-system get svc istio-ingressgateway` and then go to `http://10.109.249.148/` which is the address of the LoadBalancer to show the website.
 
 ![istio-curl-gateway](./images/istio-curl-gateway.png)
 
@@ -305,7 +310,7 @@ for i in $(seq 1 1000); do curl -s -o /dev/null "http://$GATEWAY_URL/"; done
 
 We created new tags in our docker hub: v1 and v2, to specify which version we were on, testing if it works. Then, we created a second deployment of our app, and a new service. This allows us to have two deployment of the same app with different versions.
 
-To route dynamically to multiple versions of a microservice, we have to add a key component which is called **DestinationRule**.
+To route dynamically to multiple versions of a microservice, we have to add a key component which is called **DestinationRule** inside our `gateway.yaml`.
 
 This allows us to link our versions to subsets that are recognized by the **VirtualService**.
 
@@ -323,10 +328,21 @@ Traffic shifting is really easy to setup, you just have to add the weight in the
         subset: v2
       weight: 20 #Percentage of people arriving here
 ```
+We can curl our website several times to see if the versions are well set at 80% - 20%:
+
+![kiali-version-routing](./images/istio-routing-curl.png)
+
+It works as intended, most versions are v1 and sometimes we get v2.
+
+In kiali dashboard, we get:
+
+![kiali-version-routing](./images/istio-kiali-version-routing.png)
 
 ## Monitoring
 
-### Kiali dashboarding (WIP)
+### Kiali dashboarding
+
+#### Installation
 
 * To install kiali, we have to add addons to our cluster `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/kiali.yaml`.
 
@@ -339,6 +355,9 @@ kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samp
 ```
 kubectl -n istio-system get svc kiali
 ```
+
+![istio-kiali-system](./images/istio-kiali-system.png)
+
 * Now, we need to forward the port to be able to access the Kiali dashboard:
 
 ```
@@ -351,7 +370,17 @@ kubectl port-forward svc/kiali -n istio-system 20001
 istioctl dashboard kiali
 ```
 
-### Prometheus (WIP)
+![istio-kiali-dashboard](./images/istio-kiali-dashboard.png)
+
+#### Usage
+
+Once in the Kiali dashboard, and with a proper Prometheus installation, we can monitor traffic on the website and the different versions.
+
+![kiali-version-routing](./images/istio-kiali-version-routing.png)
+
+### Prometheus 
+
+#### Installation
 
 * To install Prometheus, we have to add addons to our cluster `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/prometheus.yaml`.
 
@@ -359,4 +388,58 @@ istioctl dashboard kiali
 kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/prometheus.yaml
 ```
 
-### Grafana (WIP)
+* To check the installation, we can use `kubectl -n istio-system get svc prometheus`
+
+```
+kubectl -n istio-system get svc prometheus
+```
+
+![istio-prometheus](./images/istio-prometheus.png)
+
+* Go to the prometheus dashboard `istioctl dashboard prometheus`
+
+```
+istioctl dashboard prometheus
+```
+
+![istio-prometheus-dashboard](./images/istio-prometheus-dashboard.png)
+
+#### Usage
+
+Prometheus is used in pairs with Kiali, or with Grafana. It allows the creation of time-series and data modelling. It is not a tool to use on its own most of the time.
+
+### Grafana
+
+#### Installation
+
+* To install Grafana, we have to add addons to our cluster `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/grafana.yaml`.
+
+```
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/grafana.yaml
+```
+
+* To check the installation, we can use `kubectl -n istio-system get svc grafana`
+
+```
+kubectl -n istio-system get svc grafana
+```
+
+![istio-grafana](./images/istio-grafana.png)
+
+* Go to the grafana dashboard `istioctl dashboard grafana`
+
+```
+istioctl dashboard grafana
+```
+
+![istio-grafana-dashboard](./images/istio-grafana-dashboard.png)
+
+#### Usage
+
+We can import [istio dashboards](https://grafana.com/grafana/dashboards/7645) into Grafana to have an overview of certain components such as:
+
+* CPU Usage
+* Disk Usage
+* Memory Usage
+
+![istio-grafana-usage](./images/istio-grafana-usage.png)
