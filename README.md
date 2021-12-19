@@ -27,7 +27,7 @@ KUDINOV Sergei
 		- [Traffic management - Open the application to outside traffic](#traffic-management---open-the-application-to-outside-traffic)
 		- [Request routing](#request-routing)
 		- [Traffic shifting](#traffic-shifting)
-	- [Monitoring](#monitoring)
+	- [8. Monitoring](#8-monitoring)
 		- [Kiali dashboarding](#kiali-dashboarding)
 			- [Installation](#installation)
 			- [Usage](#usage)
@@ -48,7 +48,24 @@ COTTART Kellian
 
 # Features
 
+We will show each and every feature we have done, and the grade that comes with it. Bonus are displayed with the BNS tag.
 
+| Subject                                                         | Code  | Grade  |
+| :-------------------------------------------------------------- | :---: | :----: |
+| Enriched web application with automated tests                   |  APP  |   1    |
+| Continuous Integration and Continuous Delivery (and Deployment) | CICD  | ND - 3 |
+| Containerisation with Docker                                    |   D   |   1    |
+| Orchestration with Docker Compose                               |  DC   |   2    |
+| Orchestration with Kubernetes                                   |  KUB  |   3    |
+| Service mesh using Istio                                        |  IST  |   2    |
+| Infrastructure as code using Ansible                            |  IAC  | ND - 3 |
+| Monitoring                                                      |  MON  |   2    |
+| Accurate project documentation in README.md file                |  DOC  |   3    |
+| BONUS : Enriching web app with redis auto reconnection          |  BNS  |   +1   |
+| BONUS : Using Netlify instead of Heroku                         |  BNS  |   +1   |
+| TOTAL                                                           |  TOT  |   16   |
+
+Now, let's see the full explanation for every part.
 
 ## 1. Web Application
 
@@ -79,6 +96,8 @@ We could have implemented it on every push of all branches, however GithubAction
 If it fails, it sends us an email, warning us about the failing of these tests.
 
 ### CD
+
+//Yann TODO -> Netlify
 
 ## 3. Vagrant, IaC
 
