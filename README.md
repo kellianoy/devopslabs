@@ -25,10 +25,12 @@ KUDINOV Sergei
 		- [Istio installation](#istio-installation)
 		- [Istio deployment using automatic envoy proxies](#istio-deployment-using-automatic-envoy-proxies)
 		- [Traffic management - Open the application to outside traffic](#traffic-management---open-the-application-to-outside-traffic)
+		- [Request routing](#request-routing)
 		- [Traffic shifting](#traffic-shifting)
 	- [Monitoring](#monitoring)
 		- [Kiali dashboarding (WIP)](#kiali-dashboarding-wip)
 		- [Prometheus (WIP)](#prometheus-wip)
+		- [Grafana (WIP)](#grafana-wip)
 
 # Authors
 
@@ -52,6 +54,7 @@ This application is the same as in module 04, with all of the "TODO" sections im
 We also added the capacity to see if the connection with the database was succesfully executed by showing a "**redis is connected**" or "**redis not connected**" message on the front page. This was implemented thanks to **zsimo's node redis retry strategy**.
 
 > https://github.com/zsimo/node-redis-retry-strategy
+
 
 ## 2. CI/CD Pipeline
 
@@ -87,9 +90,17 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 
 * Build the image using `docker build -t yann-kellian-app .`
 
+![docker build](./images/docker-step1.png)
+
 * Run the container using `docker run -p 3000:3000 -d yann-kellian-app`
 
 * Check if it works going to `localhost:3000` or by running `docker ps`. Cool, it does.
+
+![docker build](./images/docker-website.png)
+
+> Note: Of course, Redis doesn't work because it is not a docker-compose. For now, it is just our base application.
+
+* We can stop our container using `docker ps` and `docker stop [id_of_our_container]`
 
 ### Upload the image
 
@@ -99,7 +110,9 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 
 * We pushed our file using `docker push kellianoy/devops-project-app`
 
-* We verified that the repo was created and full. Check out : https://hub.docker.com/repository/docker/kellianoy/devops-project-app
+* We verified that the repo was created and full. 
+
+> Check out: https://hub.docker.com/repository/docker/kellianoy/devops-project-app
 
 ## 5. Docker-compose
 
@@ -109,6 +122,12 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 	* We add a volume named `redis-storage` to store our users.
 	
 * Run `docker-compose up`. Congratulations, it works !
+
+![docker compose up](./images/docker-compose-up.png)
+
+![docker compose website](./images/docker-compose-website.png)
+
+> Note: This time, Redis works because we have the two containers communicating with each other.
 
 * We have to check whether or not the data volume is correct, by sending post requests to create users and getting them. To do so, we used curl :
 
@@ -126,47 +145,56 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 
 * Now, we can see that the data has been persisted, even when we close the docker-compose.
 
+![docker compose persistence](./images/docker-compose-persistent.png)
+
+* Let's clean the docker-compose by doing `docker-compose down`
+
 ## 6. Kubernetes
 
-* We started by using `Kompose` to convert our `docker-compose.yaml` to Kubernetes deployment / service files. By using the command `kompose up .` and then `kompose convert`, we generated new files allowing to do the same deployment actions that were referred in the docker-compose.
+To begin Kubernetes, Let's install [minikube](https://kubernetes.io/fr/docs/tasks/tools/install-minikube/). Now, let's start it using `minikube start`.
 
-* This wasn't satisfactory, but it gave us a good idea of what to have to generate a working cluster. This result didn't allow us to make a persistent data claim, so we had to rework it into a proper deployment. This includes a total of 5 files:
+We started by using `Kompose` to convert our `docker-compose.yaml` to Kubernetes deployment / service files. By using the command `kompose up .` and then `kompose convert`, we generated new files allowing to do the same deployment actions that were referred in the docker-compose.
+
+This wasn't satisfactory, but it gave us a good idea of what to have to generate a working cluster. This result didn't allow us to make a persistent data claim, so we had to rework it into a proper deployment. This includes a total of 5 files:
 	* `k8s/web-app-deployment.yaml`, that allows the deployment of one pod of our image
 	* `k8s/web-app-service.yaml`, that allows the service of our app using a loadBalancer to be accessible from our browser
 	* `k8s/redis-deployment.yaml`, that allows the deployment of one pod of Redis
 	* `k8s/redis-service.yaml`, that allows the service of Redis
 	* `k8s/redis-claim.yaml`, that allows the creation of a persistentVolumeClaim to make the link between database and app, and store it.
+  
+* To apply our files and create our cluster, we used the command `kubectl apply -f k8s/`.
 
-* To apply our files, we used the command `kubectl apply -f k8s/`.
+![kubernetes deployment](./images/kubernetes-deployment.png)
 
 * To get all the different things that were created, we have different commands:
 	*`kubectl get pods`
 	*`kubectl get deployments`
-	*`kubectl get services` which we parametered as type = LoadBalancer to be able to be accessed on the web browser.
+	*`kubectl get services`
+	*`kubectl get all`
 
 * Once it was lauched, we can use `minikube tunnel` to know the status of our machine.
 
-* We can access the app by using `minikube service devops-app-service`.
+* We can access the app by using `curl 10.100.85.76:3000`. (Which is the address given by the devops-app-service)
 
-* We can add a user using, as for 5., but with a modified ip and port:
+* We can add a user using :
 
 ```
-curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://192.168.49.2:30150/user/
+curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://10.100.85.76:3000/user/
 ```
+![kubernetes persistent](./images/kubernetes-persistent.png)
 
 > Note : If you try to do these steps again, you will have a different port number and ip.
 
-* Let's stop the service: `minikube stop`, and open it again: `minikube start`. Now, we go to `http://192.168.49.2:30150/user/kellianoy` and we confirm that we have still our user in the database, meaning that it has been properly setup !
+* Let's stop the service: `minikube stop`, and open it again: `minikube start`. Now, we go to `10.100.85.76:3000/user/kellianoy` and we confirm that we have still our user in the database, meaning that it has been properly setup !
 
 ## 7. Istio
 
 For this part, we are using the official Istio documentation:
 
-1. https://istio.io/latest/docs/setup/getting-started/
-2. https://istio.io/latest/docs/examples/microservices-istio/setup-kubernetes-cluster/
-3. https://istio.io/latest/docs/tasks/traffic-management/traffic-shifting/
-4. https://istio.io/latest/docs/tasks/traffic-management/request-routing/
-5. https://istio.io/latest/blog/2019/multicluster-version-routing/ 
+1. [Getting Started](https://istio.io/latest/docs/setup/getting-started/)
+2. [Request Routing](https://istio.io/latest/docs/tasks/traffic-management/request-routing/)
+3. [Traffic Shifting](https://istio.io/latest/docs/tasks/traffic-management/traffic-shifting/)
+4. [Multicluster version routing](https://istio.io/latest/blog/2019/multicluster-version-routing/)
 
 ### Istio download
 
@@ -188,35 +216,40 @@ export PATH=$PWD/bin:$PATH
 istioctl
 ```
 
+![istio setup](./images/istio-setup.png)
+
 ### Istio installation
 
-* To install Itio, just enter `istioctl install --set profile=demo -y`. You can check the installation by doing `kubectl get ns` which gives us all the namespaces. We can see that **istio-system** is present in the list. It also creates istio pods. We decided to go with the demo profile to allow easier configuration.
+* To install Itio, just enter `istioctl install`. You can check the installation by doing `kubectl get ns` which gives us all the namespaces. We can see that **istio-system** is present in the list. It also creates istio pods. We decided to go with the demo profile to allow easier configuration.
 
 ```
-istioctl install --set profile=demo -y
+istioctl install
 ```
+
+![istio install](./images/istio-install.png)
 
 ### Istio deployment using automatic envoy proxies
 
-* We can create a namespace for our kubernetes cluster, in case we have more than one.
+* We can create a namespace for our kubernetes cluster, **in case we have more than one**.
 
 ```
 kubectl create namespace devops
 ```
 
-As we only have one, we will keep on using default.
+As we only have one, we will keep on using **default**.
 
 * First, we need to label the desired namespace of our kubernetes cluster as **istio-injection**, for istio to know which pods to implement the envoy proxies on. To do this, we have the command `kubectl label namespace default istio-injection=enabled`. To confirm it worked properly, we can show `kubectl get ns default --show-labels`. Great, everything is here.
 
 ```
-kubectl label namespace devops istio-injection=enabled
+kubectl label namespace default istio-injection=enabled
 
 ```
 
 ```
 kubectl get ns devops --show-labels
 ```
-* We changed the cluster a bit to have our service be a **ClusterIP** type rather than a **LoadBalancer** because this role will be assumed by Istio.
+
+![istio get ns default](./images/istio-get-ns-default.png)
   
 * We can now delete all our elements in our cluster and restart them using:
 	* `kubectl delete -f ./k8s` 
@@ -232,6 +265,8 @@ curl 10.101.125.13:3000
 
 > Note: You can also open the web browser and put the address inside.
 
+![istio curl](./images/istio-curl.png)
+
 We're having results, great ! Our Istio is set up. 
 
 ### Traffic management - Open the application to outside traffic
@@ -243,7 +278,7 @@ After setting up Istio, we have to configure the application to allow outside tr
 
 We created a new file called `gateway.yaml` inside of the istio folder, composed of those two elements, allowing us to create a **LoadBalancer** at the beginning of our mesh.
 
-To get our gateway url, we can use `minikube tunnel` then:
+To get our gateway url, we can use `minikube tunnel` and in another terminal:
 
 ```
 export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
@@ -256,7 +291,9 @@ echo "http://$GATEWAY_URL/"
 
 We can now curl this address to check if everything is alright. Great, it works.
 
-If we want to show the traffic in a Kiali dashboard, we can use this command: 
+![istio-curl-gateway](./images/istio-curl-gateway.png)
+
+If we want to show the traffic in a Kiali dashboard, we can use this command to generate traffic and display it: 
 
 ```
 for i in $(seq 1 1000); do curl -s -o /dev/null "http://$GATEWAY_URL/"; done
@@ -264,9 +301,15 @@ for i in $(seq 1 1000); do curl -s -o /dev/null "http://$GATEWAY_URL/"; done
 
 ![kiali-traffic](./images/istio-traffic.png)
 
-### Traffic shifting 
+### Request routing 
 
-For traffic shifting, we created new tags in our docker hub: v1 and v2, to specify which version we were on, testing if it works. Then, we created a second deployment of our app, and a new service.
+We created new tags in our docker hub: v1 and v2, to specify which version we were on, testing if it works. Then, we created a second deployment of our app, and a new service. This allows us to have two deployment of the same app with different versions.
+
+To route dynamically to multiple versions of a microservice, we have to add a key component which is called **DestinationRule**.
+
+This allows us to link our versions to subsets that are recognized by the **VirtualService**.
+
+### Traffic shifting 
 
 Traffic shifting is really easy to setup, you just have to add the weight in the destination part of a virtual service.
 
@@ -315,3 +358,5 @@ istioctl dashboard kiali
 ```
 kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/addons/prometheus.yaml
 ```
+
+### Grafana (WIP)

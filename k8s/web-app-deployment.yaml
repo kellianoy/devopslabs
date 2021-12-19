@@ -43,3 +43,49 @@ spec:
       - name: redis-storage
         persistentVolumeClaim:
           claimName: redis-storage
+---
+# For the v2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment-v2
+  labels:
+    app: devops-project-app
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: devops-project-app
+      version: v2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: devops-project-app
+        version: v2
+    spec:
+      containers:
+      - name: devops-project-app
+        image: kellianoy/devops-project-app:v2
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+        # data volume from where devops-project-app read data written by Redis
+        volumeMounts:
+        - name: redis-storage 
+          mountPath: /data
+          readOnly: false
+      # Linking our persistentVolumeClaim
+      volumes:
+      - name: redis-storage
+        persistentVolumeClaim:
+          claimName: redis-storage
