@@ -28,7 +28,7 @@ KUDINOV Sergei
 		- [Request routing](#request-routing)
 		- [Traffic shifting](#traffic-shifting)
 	- [8. Monitoring](#8-monitoring)
-		- [Kiali dashboarding](#kiali-dashboarding)
+		- [Kiali](#kiali)
 			- [Installation](#installation)
 			- [Usage](#usage)
 		- [Prometheus](#prometheus)
@@ -40,7 +40,7 @@ KUDINOV Sergei
 
 # Authors
 
-We're two members of ING 4 SI Inter at ECE Paris : 
+We are two students contributing to this project:
 
 MESSALATI Yann
 
@@ -61,9 +61,11 @@ We will show each and every feature we have done, and the grade that comes with 
 | Infrastructure as code using Ansible                            |  IAC  | ND - 3 |
 | Monitoring                                                      |  MON  |   2    |
 | Accurate project documentation in README.md file                |  DOC  |   3    |
+| TOTAL FEATURES                                                  |  TOT  |   14   |
 | BONUS : Enriching web app with redis auto reconnection          |  BNS  |   +1   |
 | BONUS : Using Netlify instead of Heroku                         |  BNS  |   +1   |
-| TOTAL                                                           |  TOT  |   16   |
+| BONUS : Using Kiali for dashboarding                            |  BNS  |   +1   |
+| TOTAL                                                           |  TOT  |   17   |
 
 Now, let's see the full explanation for every part.
 
@@ -359,7 +361,7 @@ In kiali dashboard, we get:
 
 ## 8. Monitoring
 
-### Kiali dashboarding
+### Kiali
 
 #### Installation
 

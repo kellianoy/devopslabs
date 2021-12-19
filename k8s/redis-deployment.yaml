@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: node-redis
-  replicas: 1
+  replicas: 1 # Creating one pod
   strategy:
     type: Recreate
   template:
@@ -17,10 +17,10 @@ spec:
     spec:
       containers:
       - name: redis
-        image: redis:alpine
+        image: redis:alpine # Downloading alpine version of redis to save space
         imagePullPolicy: IfNotPresent
         resources:
-          requests:
+          requests: # Limiting memory usage
             memory: "64Mi"
             cpu: "250m"
           limits:

@@ -11,7 +11,7 @@ services:
       - redis-storage:/data
   web:
     container_name: web-app
-    # Dependancy
+    # Dependance
     depends_on:
        - redis
     # Pulling the image from the repo

@@ -1,5 +1,5 @@
 apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
+kind: Gateway # Using gateway to expose our mesh 
 metadata:
   name: devops-app-gateway
 spec:
@@ -15,12 +15,12 @@ spec:
     - '*'
 ---
 apiVersion: networking.istio.io/v1alpha3
-kind: DestinationRule
+kind: DestinationRule # Creating a destination rule to link each version to a subset, to allow route requesting
 metadata:
   name: devops-app-destination
 spec:
   host: devops-app-service
-  subsets:
+  subsets: # Creating a subset for each version of our devops-app
   - name: v1
     labels:
       version: v1
@@ -29,30 +29,30 @@ spec:
       version: v2
 ---
 apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
+kind: VirtualService # Creating a virtual service to do request routing and trafic splitting as well as using the gateway
 metadata:
   name: devops-app-vsc
 spec:
   hosts:
   - '*'
   gateways:
-  - devops-app-gateway
+  - devops-app-gateway # Our previously defined gateway
   http:
   - match:
     - uri:
-        exact: "/"
+        exact: "/" # HTTP website has to match /
     route:
     - destination:
         host: devops-app-service
         subset: v1
         port:
           number: 3000
-      weight: 80
+      weight: 80 # 80% of the traffic will be on subset v1
     - destination:
         host: devops-app-service
         subset: v2
         port:
           number: 3000
-      weight: 20
+      weight: 20 # 20% of the traffic will be on subset v2
 
 

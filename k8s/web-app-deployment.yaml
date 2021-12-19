@@ -4,10 +4,10 @@ kind: Deployment
 metadata:
   name: webapp-deployment-v1
   labels:
-    app: devops-project-app
+    app: devops-project-app # Version 1 of our app
     version: v1
 spec:
-  replicas: 1
+  replicas: 1 # Number of pods created by the deployment
   selector:
     matchLabels:
       app: devops-project-app
@@ -21,18 +21,18 @@ spec:
         version: v1
     spec:
       containers:
-      - name: devops-project-app
+      - name: devops-project-app # Downloading the first version on docker hub as image
         image: kellianoy/devops-project-app:v1
         imagePullPolicy: IfNotPresent
         resources:
-          requests:
+          requests: # Limiting the resources given
             memory: "64Mi"
             cpu: "250m"
           limits:
             memory: "128Mi"
             cpu: "500m"
         ports:
-        - containerPort: 3000
+        - containerPort: 3000 # Port of the container -> expose 3000 in the image in the container
         # data volume from where devops-project-app read data written by Redis
         volumeMounts:
         - name: redis-storage 
