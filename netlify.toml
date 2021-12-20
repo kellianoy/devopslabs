@@ -1,5 +1,0 @@
-[build]
-  base = "userapi/"
-  command = "npm i && npm run build"
-  # This is the directory is publishing to netlify's CDN
-  publish = "build"
