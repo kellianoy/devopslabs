@@ -4,9 +4,7 @@
   become: true
  
   tasks: 
-  #- name: printf 
-  #  command: ls
-  #  register: command_output
+
   
   - name: Install npm
     apt:
@@ -35,6 +33,11 @@
   - name: tar redis
     command: tar xvzf redis-stable.tar.gz
 
+  - name: printf 
+    command: ls
+    register: command_output
+  - debug:
+           var: command_output.stdout_lines
   - name: cd redis-stabe
     command: cd redis-stable
 
@@ -57,6 +60,3 @@
     command: npm start
     args:
       chdir: /srv/userapi
-
-  #- debug:
-  #         var: command_output.stdout_lines
