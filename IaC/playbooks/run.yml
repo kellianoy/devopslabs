@@ -1,9 +1,0 @@
----
-- hosts: gitlab_server
-  # Run commands as root
-  become: true
-  # Roles to be executed on these hosts
-  roles:
-  - role: install
-  - role: redis
-

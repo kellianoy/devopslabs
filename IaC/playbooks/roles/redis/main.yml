@@ -1,6 +1,0 @@
----
-- name: Install required packages
-  npm:
-    name:
-      - redis
-    state: latest

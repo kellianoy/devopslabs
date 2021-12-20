@@ -1,0 +1,38 @@
+---
+- hosts: project
+  # Run commands as root
+  become: true
+ 
+  tasks: 
+  - name: printf 
+    command: ls
+    register: command_output
+  
+  - name: Install npm
+    yum:
+      name:
+        - nodejs
+      state: latest
+
+  - name: Install redis
+    command: npm install redis-server
+    
+  #- name: Restart Redis Server
+  #  service: name=project state=restarted enabled=yes
+
+  #- name: Restart Redis Server
+  #  command: redis-server
+
+  - name: Install app
+    command: npm install
+    args:
+      chdir: /srv/userapi
+
+
+  - name: start app
+    command: npm start
+    args:
+      chdir: /srv/userapi
+
+  - debug:
+           var: command_output.stdout_lines
