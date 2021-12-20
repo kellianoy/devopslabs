@@ -1,17 +1,11 @@
-# Dev Ops Project Repository
+# Dev Ops Project Repository <!-- omit in toc -->
 
 Hello. This is the repository for the DevOps project held by:
 
 KUDINOV Sergei
 
-# Netlify State
+# Table of Contents <!-- omit in toc -->
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/7f94f99c-e1f7-4a9e-b9f7-bd105fa7f290/deploy-status)](https://app.netlify.com/sites/devops-app/deploys)
-
-# Table of Contents
-
-- [Dev Ops Project Repository](#dev-ops-project-repository)
-- [Table of Contents](#table-of-contents)
 - [Authors](#authors)
 - [Features](#features)
 	- [1. Web Application](#1-web-application)
@@ -67,9 +61,8 @@ We will show each and every feature we have done, and the grade that comes with 
 | Accurate project documentation in README.md file                |  DOC  |   3    |
 | TOTAL FEATURES                                                  |  TOT  |   14   |
 | BONUS : Enriching web app with redis auto reconnection          |  BNS  |   +1   |
-| BONUS : Using Netlify instead of Heroku                         |  BNS  |   +1   |
 | BONUS : Using Kiali for dashboarding                            |  BNS  |   +1   |
-| TOTAL                                                           |  TOT  |   17   |
+| TOTAL                                                           |  TOT  |   16   |
 
 Now, let's see the full explanation for every part.
 
@@ -103,7 +96,11 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 
 ### CD
 
-//Yann TODO -> Netlify
+For the CD part, we could simply use [**Microsoft Azure**](https://docs.microsoft.com/en-us/azure/app-service/quickstart-multi-container) to push our `docker-compose` file to Microsoft server.
+
+However, for this, we need to enter our card informations, so we decided not to use this.
+
+//Yann TODO
 
 ## 3. Vagrant, IaC
 
