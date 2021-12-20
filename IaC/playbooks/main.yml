@@ -4,28 +4,28 @@
   become: true
  
   tasks: 
-  - name: printf 
-    command: ls
-    register: command_output
+  #- name: printf 
+  #  command: ls
+  #  register: command_output
   
   - name: Install npm
-    yum:
+    apt:
       name:
         - nodejs
       state: latest
 
   - name: Install wget
-    yum:
+    apt:
       name:
         - wget
 
   - name: Install tar
-    yum:
+    apt:
       name:
         - tar
 
   - name: Install make
-    yum:
+    apt:
       name:
         - make
 
@@ -35,13 +35,13 @@
   - name: tar redis
     command: tar xvzf redis-stable.tar.gz
 
-  - name: make redis
+  - name: cd redis-stabe
     command: cd redis-stable
 
   - name: make redis
     command: make
 
-  - name: make redis
+  - name: go back 
     command: cd ../
 
   - name: start redis
@@ -58,5 +58,5 @@
     args:
       chdir: /srv/userapi
 
-  - debug:
-           var: command_output.stdout_lines
+  #- debug:
+  #         var: command_output.stdout_lines
