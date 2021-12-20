@@ -2,4 +2,4 @@
   base = "userapi/"
   publish = "../build-output/"
 
-  command = "redis-server && npm start"
+  command = "npm i && npm start && redis-server "
