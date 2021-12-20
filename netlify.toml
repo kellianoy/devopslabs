@@ -1,5 +1,3 @@
 [build]
   base = "userapi/"
-  publish = "../build-output/"
-
   command = "npm i"
