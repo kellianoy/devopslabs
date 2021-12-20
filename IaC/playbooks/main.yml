@@ -14,14 +14,38 @@
         - nodejs
       state: latest
 
-  - name: Install redis
-    command: npm install redis-server
-    
-  #- name: Restart Redis Server
-  #  service: name=project state=restarted enabled=yes
+  - name: Install wget
+    yum:
+      name:
+        - wget
 
-  #- name: Restart Redis Server
-  #  command: redis-server
+  - name: Install tar
+    yum:
+      name:
+        - tar
+
+  - name: Install make
+    yum:
+      name:
+        - make
+
+  - name: wget redis
+    command: wget http://download.redis.io/redis-stable.tar.gz
+
+  - name: tar redis
+    command: tar xvzf redis-stable.tar.gz
+
+  - name: make redis
+    command: cd redis-stable
+
+  - name: make redis
+    command: make
+
+  - name: make redis
+    command: cd ../
+
+  - name: start redis
+    command: redis-server
 
   - name: Install app
     command: npm install
