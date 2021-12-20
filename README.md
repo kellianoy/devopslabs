@@ -4,6 +4,10 @@ Hello. This is the repository for the DevOps project held by:
 
 KUDINOV Sergei
 
+# Netlify State
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/7f94f99c-e1f7-4a9e-b9f7-bd105fa7f290/deploy-status)](https://app.netlify.com/sites/devops-app/deploys)
+
 # Table of Contents
 
 - [Dev Ops Project Repository](#dev-ops-project-repository)
