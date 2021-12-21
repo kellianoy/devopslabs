@@ -177,6 +177,14 @@ git subtree push --prefix userapi heroku master
 
 ![Heroku](/images/heroku-done.png)
 
+* To update our deployment, we can use those instructions: 
+
+![Heroku-cli](/images/heroku-cli.png)
+
+Congratulations, it worked.
+
+![Heroku-success](/images/heroku-success.png)
+
 We cannot further develop the continuous deployement as the redis deployement requires adding credit card informations. The deployement itself will however show the disconnected warning for the redis part.
 
 The website is accessible from [here](https://devops-app-kellian-yann.herokuapp.com/).
