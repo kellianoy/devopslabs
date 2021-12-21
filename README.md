@@ -65,7 +65,7 @@ We will show each and every feature we have done, and the grade that comes with 
 | Monitoring                                                      |  MON  |  2/2   |
 | Accurate project documentation in README.md file                |  DOC  |  3/3   |
 | TOTAL FEATURES                                                  |  TOT  | 17/20  |
-| BONUS : Enriching web app with redis auto reconnection          |  BNS  |   +1   |
+| BONUS : Enriching web app with redis auto reconnection and CRUD |  BNS  |   +1   |
 | BONUS : Using Kiali for dashboarding                            |  BNS  |   +1   |
 | TOTAL                                                           |  TOT  | 19/20  |
 
@@ -78,9 +78,19 @@ This web application uses tests that are located inside of the `test` folder.
 
 This application is the same as in module 04, with all of the "TODO" sections implemented.
 
-We also added the capacity to see if the connection with the database was succesfully executed by showing a "**redis is connected**" or "**redis not connected**" message on the front page. This was implemented thanks to **zsimo's node redis retry strategy**.
-
+* We also added the capacity to see if the connection with the database was succesfully executed by showing a "**redis is connected**" or "**redis not connected**" message on the front page. This was implemented thanks to [zsimo's node redis retry strategy](https://github.com/zsimo/node-redis-retry-strategy).
+  
 > https://github.com/zsimo/node-redis-retry-strategy
+
+* We brought a prettier eslinter into the project as a dev dependency using:
+
+```
+npm install --save-dev prettier-eslint
+```
+
+* We implemented update and delete operations to complete the **CRUD: Create, Read, Update, Delete**. We also implemented all the tests for the routes and the fonctions.
+
+
 
 
 ## 2. CI/CD Pipeline

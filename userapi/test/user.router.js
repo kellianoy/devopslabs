@@ -111,4 +111,66 @@ describe('User REST API', () => {
         })
     }) 
   })
+
+  describe('PUT /user', () => {
+    it('update a user', (done) => {
+      const user = {
+        username: 'sergkudinov',
+        firstname: 'Sergei',
+        lastname: 'Kudinov'
+      }
+      chai.request(app)
+        .post('/user')
+        .send(user)
+        .then((res) => {
+          chai.request(app)
+          .put('/user')
+          .send(user)
+          .then((res) => {
+            chai.expect(res).to.have.status(201)
+            chai.expect(res.body.status).to.equal('success')
+            chai.expect(res).to.be.json
+            done()
+          })
+        })
+        .catch((err) => {
+           throw err
+        })
+    })
+
+    it('pass wrong parameters', (done) => {
+      const user = {
+        username: 'sergkudinov',
+        firstname: 'Sergei',
+        lastname: 'Kudinov'
+      }
+      const user2 = {
+        username: 'faketest',
+        firstname: 'zegze',
+        lastname: 'ezgzge'
+      }
+      chai.request(app)
+        .post('/user')
+        .send(user)
+        .then((res) => {
+          chai.request(app)
+          .put('/user')
+          .send(user2)
+          .then((res) => {
+            chai.expect(res).to.have.status(400)
+            chai.expect(res.body.status).to.equal('error')
+            chai.expect(res).to.be.json
+            done()
+          })
+        })
+        .catch((err) => {
+           throw err
+        })
+    })
+
+  })
+
+  describe('DELETE /user', () => {
+    //TODO
+  })
 })

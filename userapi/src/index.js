@@ -25,9 +25,9 @@ app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
   res.send('The application is launched and working ! Hooray ! <br><br>' 
-  + "The status of Redis connection is : <span>" 
-  + working
-  + "</span><br><br>This is version 2" )
+  + "The status of Redis connection is : "
+  + "<span>" + working + "</span>"
+  + "<br><br>This is version 2" )
 })
 
 app.use('/user', userRouter)

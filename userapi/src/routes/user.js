@@ -39,6 +39,29 @@ userRouter
       }
       resp.status(201).json(respObj)
     })
+  }) 
+
+  .put('/', (req, resp) => { 
+  userController.update(req.body, (err, res) => {
+    let respObj
+    if(err) {
+      respObj = {
+        status: "error",
+        msg: err.message
+      }
+      return resp.status(400).json(respObj)
+    }
+    respObj = {
+      status: "success",
+      msg: res
+    }
+    resp.status(201).json(respObj)
+  }) 
+
+  .delete('/:username', (req, resp) => { 
+    
+    //TODO
+  })
 })
   
 module.exports = userRouter
