@@ -543,6 +543,14 @@ istioctl dashboard prometheus
 
 Prometheus is used in pairs with Kiali, or with Grafana. It allows the creation of time-series and data modelling. It is not a tool to use on its own most of the time.
 
+Its usage with Kiali involve all actions such as seeing the mesh and the traffic of the mesh, as we have seen in previous parts.
+
+For instance, entering the query `istio_requests_total`, we can see how many requests were made on our mesh, allowing us to see its metrics.
+
+![istio-prom-requests](images/istio-prom-requests.png)
+
+There are various informations, such as which ingress-gateway is concerned, the source, the pods, the deployments, the services and so on.
+
 ### Grafana
 
 #### Installation
