@@ -110,7 +110,7 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 
 **As of the 21/12/2021, we have used up all our github actions, so this is why it shows the tests as not working.**
 
-![test-ci](image/ci-tests.png)
+![test-ci](images/ci-tests.png)
 
 ### CD
 
@@ -128,7 +128,7 @@ We created a netlify.toml file that download the dependencies inside the userapi
 
 However, this implementation is stuck at the localhost part and cancels the deployement. This is due to the fact that the application is using a server while Netlify create only serverless and static deployements.
 
-![netlify deployement sucessful but cancelled](/images/netlify-deployement-sucessful-but-cancelled.png)
+![netlify deployement sucessful but cancelled](/images/netlify-deployement-sucessful-but-cancelled.PNG)
 
 After looking at the possibilities, Netlify is not available for our application.
 
