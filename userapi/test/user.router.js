@@ -88,11 +88,9 @@ describe('User REST API', () => {
         .catch((err) => {
            throw err
         })
-      
-     
     }) 
 
-    it("cannot a user that doesn't exist", (done) => {
+    it("cannot get a user that doesn't exist", (done) => {
       const user = {
         username: 'invalid',
         firstname: 'invalid',
@@ -132,6 +130,9 @@ describe('User REST API', () => {
             chai.expect(res).to.be.json
             done()
           })
+          .catch((err) => {
+            throw err
+          })
         })
         .catch((err) => {
            throw err
@@ -162,6 +163,9 @@ describe('User REST API', () => {
             chai.expect(res).to.be.json
             done()
           })
+          .catch((err) => {
+            throw err
+          })
         })
         .catch((err) => {
            throw err
@@ -171,6 +175,52 @@ describe('User REST API', () => {
   })
 
   describe('DELETE /user', () => {
-    //TODO
+
+    it("delete a user", (done) => {
+      const user = {
+        username: 'sergkudinov',
+        firstname: 'Sergei',
+        lastname: 'Kudinov'
+      }
+      chai.request(app)
+        .post('/user')
+        .send(user)
+        .then((res) => {
+          chai.request(app)
+            .delete(`/user/${user.username}`)
+            .then((res) => {
+                    chai.expect(res).to.have.status(201)
+                    chai.expect(res.body.status).to.equal('success')
+                    chai.expect(res).to.be.json
+                    done()
+            })
+            .catch((err) => {
+              throw err
+            })
+        })
+        .catch((err) => {
+           throw err
+        })
+    })
+    
+    it("cannot delete a user that doesn't exist", (done) => {
+      const user = {
+        username: 'invalid',
+        firstname: 'invalid',
+        lastname: 'invalid'
+      }
+      chai.request(app)
+        .delete(`/user/${user.username}`)
+        .then((res) => {
+                chai.expect(res).to.have.status(400)
+                chai.expect(res.body.status).to.equal('error')
+                chai.expect(res).to.be.json
+                done()
+        })
+        .catch((err) => {
+           throw err
+        })
+    }) 
+
   })
 })

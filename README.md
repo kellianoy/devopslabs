@@ -90,8 +90,7 @@ npm install --save-dev prettier-eslint
 
 * We implemented update and delete operations to complete the **CRUD: Create, Read, Update, Delete**. We also implemented all the tests for the routes and the fonctions.
 
-
-
+![test](/images/app-test.png)
 
 ## 2. CI/CD Pipeline
 
@@ -125,7 +124,7 @@ We created a netlify.toml file that download the dependencies inside the userapi
 
 However, this implementation is stuck at the localhost part and cancels the deployement. This is due to the fact that the application is using a server while Netlify create only serverless and static deployements.
 
-![netlify deployement sucessful but cancelled](./images/netlify-deployement-sucessful-but-cancelled.png)
+![netlify deployement sucessful but cancelled](/images/netlify-deployement-sucessful-but-cancelled.png)
 
 After looking at the possibilities, Netlify is not available for our application.
 
@@ -172,7 +171,7 @@ heroku buildpacks:set heroku/nodejs -a devops-app-kellian-yann
 git subtree push --prefix userapi heroku master
 ```
 
-[!Heroku](/images/heroku-done.png)
+![Heroku](/images/heroku-done.png)
 
 We cannot further develop the continuous deployement as the redis deployement requires adding credit card informations. The deployement itself will however show the disconnected warning for the redis part.
 
@@ -184,25 +183,25 @@ We cannot further develop the continuous deployement as the redis deployement re
 
 * We used the vagrant file in the [**assets/part-2**](https://github.com/adaltas/ece-devops-2021-fall/tree/master/courses/devops/modules/03.infrustructure-as-code/assets/part-2) folder and changed the configuration to create a ubuntu box instead of centos/7.
 
-![vagrant box ubuntu](./images/vagrantbox-ubuntu.png)
+![vagrant box ubuntu](/images/vagrantbox-ubuntu.png)
 
 * Using ansible, we can make a installation script, in a playbook, that will download the tools necessary for building the app and then download the dependancies.
 
-![vagrant redis necessities](./images/vagrant-redis-necessities.png)
-![vagrant npm necessities](./images/vagrant-npm-necessities.png)
-![vagrant npm dependancies](./images/vagrant-install-app.png)
+![vagrant redis necessities](/images/vagrant-redis-necessities.png)
+![vagrant npm necessities](/images/vagrant-npm-necessities.png)
+![vagrant npm dependancies](/images/vagrant-install-app.png)
 
 * To run the application, it is necessary to have redis downloaded and started. If it isn't, the page will only show that we are not yet connected to redis. we then download the redis files and do make so that the start command become accesible.
 
-![wget,tar,make the redis files](./images/vagrant-wget-tar-make-redis.png)
+![wget,tar,make the redis files](/images/vagrant-wget-tar-make-redis.png)
 
 * We then execute it.
 
-![redis-server](./images/vagrant-start-redis.png)
+![redis-server](/images/vagrant-start-redis.png)
 
 * Once the redis server is started we start the application with `npm start`.
 
-![npm start](./images/vagrant-start-app.png)
+![npm start](/images/vagrant-start-app.png)
 
 ## 4. Build a docker image of the web app
 
