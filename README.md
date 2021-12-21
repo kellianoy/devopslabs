@@ -166,6 +166,10 @@ git subtree push --prefix userapi heroku master
 
 We cannot further develop the continuous deployement as the redis deployement requires adding credit card informations. The deployement itself will however show the disconnected warning for the redis part.
 
+The website is accessible from [here](https://devops-app-kellian-yann.herokuapp.com/).
+
+> https://devops-app-kellian-yann.herokuapp.com/
+
 ## 3. Vagrant, IaC
 
 * To make the Infrastructure as Code (IaC) we downloaded Virtualbox and Vagrant following the steps in their respective tutorial :  [**Virtualbox tutorial**](https://www.virtualbox.org/wiki/Downloads), [**Vagrant tutorial**](https://www.vagrantup.com/downloads.html).
