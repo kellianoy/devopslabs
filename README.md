@@ -112,7 +112,7 @@ After looking at the possibilities, netlify is not available for our application
 
 To make a correct continous deployement, we then used [**Heroku**](https://www.heroku.com/)
 
-* we registered on the free part of the site, then we linked the project to the platform, there it asked for the imput of our app_name that need to be unique inside the global heroku database.
+* We registered on the free part of the site, then we linked the project to the platform, there it asked for the imput of our app_name that need to be unique inside the global heroku database.
 
 * Inside the account setting we searched for the `API_KEY` and used it to configure a secret in github:
 	* We copy the `API_KEY` and go into our github account.
@@ -121,10 +121,12 @@ To make a correct continous deployement, we then used [**Heroku**](https://www.h
 
 By doing so we finished implementing the link between heroku and github necessary to allow the continuous deployement.
 
-* we created the `main.yml` file inside the [.github/workflows](./github/workflows) directory.
+* We created the `main.yml` file inside the [.github/workflows](./github/workflows) directory using the default actions for continuous deployement.
 
-* after having setup the `app name`, `API_KEY` and register using our `email` we can then fill out the `main.yml` file correspondingly.
+* After having setup the `app name`, `API_KEY` and register using our `email` we can then fill out the `main.yml` file correspondingly.
 
+We cannot further devellope the continuous deployement as the redis deployement requires adding credit card information.
+But the deployement itself will show the not connected to redis page.
 
 ## 3. Vagrant, IaC
 
