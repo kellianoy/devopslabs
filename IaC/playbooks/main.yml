@@ -38,17 +38,29 @@
     register: command_output
   - debug:
            var: command_output.stdout_lines
-  - name: cd redis-stabe
-    command: cd redis-stable
+  #- name: cd redis-stabe
+  #  command: cd redis-stable
 
   - name: make redis
     command: make
+    args:
+      chdir: redis-stable
 
-  - name: go back 
-    command: cd ../
+  #- name: go back 
+  #  command: cd ../
+  - name: printf 
+    command: ls
+    args:
+      chdir: redis-stable/src
+    register: command_output
+
+  - debug:
+           var: command_output.stdout_lines
 
   - name: start redis
     command: redis-server
+    args:
+      chdir: redis-stable/src
 
   - name: Install app
     command: npm install
