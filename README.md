@@ -53,21 +53,21 @@ COTTART Kellian
 
 We will show each and every feature we have done, and the grade that comes with it. Bonus are displayed with the BNS tag.
 
-| Subject                                                         | Code  | Grade  |
-| :-------------------------------------------------------------- | :---: | :----: |
-| Enriched web application with automated tests                   |  APP  |  1/1   |
-| Continuous Integration and Continuous Delivery (and Deployment) | CICD  |  3/3   |
-| Containerisation with Docker                                    |   D   |  1/1   |
-| Orchestration with Docker Compose                               |  DC   |  2/2   |
-| Orchestration with Kubernetes                                   |  KUB  |  3/3   |
-| Service mesh using Istio                                        |  IST  |  2/2   |
-| Infrastructure as code using Ansible                            |  IAC  | ND - 3 |
-| Monitoring                                                      |  MON  |  2/2   |
-| Accurate project documentation in README.md file                |  DOC  |  3/3   |
-| TOTAL FEATURES                                                  |  TOT  | 17/20  |
-| BONUS : Enriching web app with redis auto reconnection and CRUD |  BNS  |   +1   |
-| BONUS : Using Kiali for dashboarding                            |  BNS  |   +1   |
-| TOTAL                                                           |  TOT  | 19/20  |
+| Subject                                                         | Code  | Grade |
+| :-------------------------------------------------------------- | :---: | :---: |
+| Enriched web application with automated tests                   |  APP  |  1/1  |
+| Continuous Integration and Continuous Delivery (and Deployment) | CICD  |  3/3  |
+| Containerisation with Docker                                    |   D   |  1/1  |
+| Orchestration with Docker Compose                               |  DC   |  2/2  |
+| Orchestration with Kubernetes                                   |  KUB  |  3/3  |
+| Service mesh using Istio                                        |  IST  |  2/2  |
+| Infrastructure as code using Ansible                            |  IAC  |  2/3  |
+| Monitoring                                                      |  MON  |  2/2  |
+| Accurate project documentation in README.md file                |  DOC  |  3/3  |
+| TOTAL FEATURES                                                  |  TOT  | 19/20 |
+| BONUS : Enriching web app with redis auto reconnection and CRUD |  BNS  |  +1   |
+| BONUS : Using Kiali for dashboarding                            |  BNS  |  +1   |
+| TOTAL                                                           |  TOT  | 20/20 |
 
 Now, let's see the full explanation for every part.
 
@@ -107,6 +107,10 @@ We're checking if our app works on node 14 and 16 using a matrix strategy.
 We could have implemented it on every push of all branches, however GithubActions is limited in its duration of use (only up to 3000 minutes) and we're almost over the limit, so we restrained it.
 
 If it fails, it sends us an email, warning us about the failing of these tests.
+
+**As of the 21/12/2021, we have used up all our github actions, so this is why it shows the tests as not working.**
+
+![test-ci](image/ci-tests.png)
 
 ### CD
 
