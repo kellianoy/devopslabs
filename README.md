@@ -100,11 +100,58 @@ For the CD part, we could simply use [**Microsoft Azure**](https://docs.microsof
 
 However, for this, we need to enter our card informations, so we decided not to use this.
 
-//Yann TODO
+After that we tried to use netlify to implement continuous deployement.
+
+* we created a netlify.toml file that download the dependancies inside the userapi folder and then exectute the build commande: `npm i && npm start && redis-server`
+
+However this implementation is stuck at the local host and cancel it's deployement. this is due to the fact that the app created from the lab 4 is using a server while netlify create only serverless deployements.
+
+![netlify deployement sucessful but cancelled](./images/netlify-deployement-sucessful-but-cancelled.png)
+
+After looking at the possibilities, netlify is not available for our application. the continuous deployement is finished but not executable.
+
+To make a correct continous deployement, we then used [**Heroku**](https://www.heroku.com/)
+
+* we registered on the free part of the site, then we linked the project to the platform, there it asked for the imput of our app_name that need to be unique inside the global heroku database.
+
+* Inside the account setting we searched for the `API_KEY` and used it to configure a secret in github:
+	* We copy the `API_KEY` and go into our github account.
+	* then we go into `Settings -> Secrets` and click on `New Secret`
+	* we setup the name as `HEROKU_API_KEY` and the secret as the key we copied
+
+By doing so we finished implementing the link between heroku and github necessary to allow the continuous deployement.
+
+* we created the `main.yml` file inside the [.github/workflows](./github/workflows) directory.
+
+* after having setup the `app name`, `API_KEY` and register using our `email` we can then fill out the `main.yml` file correspondingly.
+
 
 ## 3. Vagrant, IaC
 
-//Yann TODO
+* To make the Infrastructure as Code (IaC) we downloaded Virtualbox and Vagrant following the steps in their respective tutorial :  [**Virtualbox tutorial**](https://www.virtualbox.org/wiki/Downloads), [**Vagrant tutorial**](https://www.vagrantup.com/downloads.html).
+
+* Then we followed the configuration in the [**lab.mb**](https://github.com/adaltas/ece-devops-2021-fall/blob/master/courses/devops/modules/03.infrustructure-as-code) of lab 3.
+
+* We used the vagrant file in the [**assets/part-2**](https://github.com/adaltas/ece-devops-2021-fall/tree/master/courses/devops/modules/03.infrustructure-as-code/assets/part-2) folder and changed the configuration to create a ubuntu box instead of centos/7.
+
+![vagrant box ubuntu](./images/)
+
+* Using ansible, we can make a installation script, in a playbook, that will download the tools necessary for building the app and then download the dependancies.
+
+![vagrant redis necessities](./images/)
+![vagrant npm necessities](./images/)
+
+* To run the application, it is necessary to have redis downloaded and started. If it isn't, the page will only show that we are not yet connected to redis. we then download the redis files and do make so that the start command become accesible.
+
+![wget,tar,make the redis files](./images/)
+
+* We then execute it .
+
+![redis-server](./images/)
+
+* once the redis server is started we start the application with `npm start`.
+
+![npm start](./images/)
 
 ## 4. Build a docker image of the web app
 
