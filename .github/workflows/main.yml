@@ -10,18 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-          cache-dependency-path: userapi/package.json
-        # Install dependencies of the project
-      - name: Install dependencies
-        run: npm i
-        working-directory: userapi
       - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "devops-app-kellian-yann" #Must be unique in Heroku
           heroku_email: "kellian.cottart@edu.ece.fr"
+          usedocker: true
