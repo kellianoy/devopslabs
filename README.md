@@ -12,6 +12,11 @@ KUDINOV Sergei
 	- [2. CI/CD Pipeline](#2-cicd-pipeline)
 		- [CI](#ci)
 		- [CD](#cd)
+			- [Azure](#azure)
+			- [Netlify](#netlify)
+			- [Heroku](#heroku)
+				- [By a config file](#by-a-config-file)
+				- [CLI](#cli)
 	- [3. Vagrant, IaC](#3-vagrant-iac)
 	- [4. Build a docker image of the web app](#4-build-a-docker-image-of-the-web-app)
 		- [Create the Dockerfile](#create-the-dockerfile)
@@ -50,19 +55,19 @@ We will show each and every feature we have done, and the grade that comes with 
 
 | Subject                                                         | Code  | Grade  |
 | :-------------------------------------------------------------- | :---: | :----: |
-| Enriched web application with automated tests                   |  APP  |   1    |
-| Continuous Integration and Continuous Delivery (and Deployment) | CICD  | ND - 3 |
-| Containerisation with Docker                                    |   D   |   1    |
-| Orchestration with Docker Compose                               |  DC   |   2    |
-| Orchestration with Kubernetes                                   |  KUB  |   3    |
-| Service mesh using Istio                                        |  IST  |   2    |
+| Enriched web application with automated tests                   |  APP  |  1/1   |
+| Continuous Integration and Continuous Delivery (and Deployment) | CICD  |  3/3   |
+| Containerisation with Docker                                    |   D   |  1/1   |
+| Orchestration with Docker Compose                               |  DC   |  2/2   |
+| Orchestration with Kubernetes                                   |  KUB  |  3/3   |
+| Service mesh using Istio                                        |  IST  |  2/2   |
 | Infrastructure as code using Ansible                            |  IAC  | ND - 3 |
-| Monitoring                                                      |  MON  |   2    |
-| Accurate project documentation in README.md file                |  DOC  |   3    |
-| TOTAL FEATURES                                                  |  TOT  |   14   |
+| Monitoring                                                      |  MON  |  2/2   |
+| Accurate project documentation in README.md file                |  DOC  |  3/3   |
+| TOTAL FEATURES                                                  |  TOT  | 17/20  |
 | BONUS : Enriching web app with redis auto reconnection          |  BNS  |   +1   |
 | BONUS : Using Kiali for dashboarding                            |  BNS  |   +1   |
-| TOTAL                                                           |  TOT  |   16   |
+| TOTAL                                                           |  TOT  | 19/20  |
 
 Now, let's see the full explanation for every part.
 
@@ -96,37 +101,70 @@ If it fails, it sends us an email, warning us about the failing of these tests.
 
 ### CD
 
-For the CD part, we could simply use [**Microsoft Azure**](https://docs.microsoft.com/en-us/azure/app-service/quickstart-multi-container) to push our `docker-compose` file to Microsoft server.
+#### Azure
+
+For the CD part, we could simply use [**Microsoft Azure**](https://docs.microsoft.com/en-us/azure/app-service/quickstart-multi-container) to push our `docker-compose` file to a Microsoft server.
 
 However, for this, we need to enter our card informations, so we decided not to use this.
 
-After that we tried to use netlify to implement continuous deployement.
+After that we tried to use Netlify to implement continuous deployement.
 
-* we created a netlify.toml file that download the dependancies inside the userapi folder and then exectute the build commande: `npm i && npm start && redis-server`
+#### Netlify
 
-However this implementation is stuck at the local host and cancel it's deployement. this is due to the fact that the app created from the lab 4 is using a server while netlify create only serverless deployements.
+We created a netlify.toml file that download the dependencies inside the userapi folder and then executed the build command: `npm i && npm start && redis-server`
+
+However, this implementation is stuck at the localhost part and cancels the deployement. This is due to the fact that the application is using a server while Netlify create only serverless and static deployements.
 
 ![netlify deployement sucessful but cancelled](./images/netlify-deployement-sucessful-but-cancelled.png)
 
-After looking at the possibilities, netlify is not available for our application. the continuous deployement is finished but not executable.
+After looking at the possibilities, Netlify is not available for our application.
 
-To make a correct continous deployement, we then used [**Heroku**](https://www.heroku.com/)
+#### Heroku
 
-* We registered on the free part of the site, then we linked the project to the platform, there it asked for the imput of our app_name that need to be unique inside the global heroku database.
+##### By a config file
 
-* Inside the account setting we searched for the `API_KEY` and used it to configure a secret in github:
-	* We copy the `API_KEY` and go into our github account.
-	* then we go into `Settings -> Secrets` and click on `New Secret`
-	* we setup the name as `HEROKU_API_KEY` and the secret as the key we copied
+To do **Continous Deployement**, we finally used [**Heroku**](https://www.heroku.com/)
 
-By doing so we finished implementing the link between heroku and github necessary to allow the continuous deployement.
+* We registered on the free part of the site, then we linked the project to the platform. There, we were asked for the name of our application, that needs to be unique inside the global heroku database. We called it `devops-app-kellian-yann`.
 
-* We created the `main.yml` file inside the [.github/workflows](./github/workflows) directory using the default actions for continuous deployement.
+* Inside the account settings, we searched for the `API_KEY` and used it to configure a secret in Github:
+	* We copy the `API_KEY` and go into our github repository.
+	* Then we go into `Settings/Secrets` and click on `New Secret`
+	* We setup the name of our secret as `HEROKU_API_KEY` and set it to the key we copied.
+
+By doing so we finished implementing the link between Heroku and Github necessary to allow the continuous deployement.
+
+* We created a file called `main.yml` file inside the [.github/workflows](./github/workflows) directory using the default actions for continuous deployement.
 
 * After having setup the `app name`, `API_KEY` and register using our `email` we can then fill out the `main.yml` file correspondingly.
 
-We cannot further devellope the continuous deployement as the redis deployement requires adding credit card information.
-But the deployement itself will show the not connected to redis page.
+> Note: As we don't have anymore Github Actions credit, it doesn't allow us to do so, we have to resort to the CLI now.
+
+##### CLI
+
+* We downloaded [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) because we had issues building our app and deploying it.
+
+* We added our files to Heroku using `git remote add heroku git@heroku.com:devops-app-kellian-yann.git`
+
+```
+git remote add heroku git@heroku.com:devops-app-kellian-yann.git
+```
+
+* We generated the NodeJS buildpack to make Heroku know what type of project we are trying to build using `heroku buildpacks:set heroku/nodejs -a devops-app-kellian-yann`
+
+```
+heroku buildpacks:set heroku/nodejs -a devops-app-kellian-yann
+```
+
+* To specify that we are working in the folder `userapi`, we need to use this command at the root of our project `git subtree push --prefix userapi heroku master`
+
+```
+git subtree push --prefix userapi heroku master
+```
+
+[!Heroku](/images/heroku-done.png)
+
+We cannot further develop the continuous deployement as the redis deployement requires adding credit card informations. The deployement itself will however show the disconnected warning for the redis part.
 
 ## 3. Vagrant, IaC
 
@@ -148,11 +186,11 @@ But the deployement itself will show the not connected to redis page.
 
 ![wget,tar,make the redis files](./images/vagrant-wget-tar-make-redis.png)
 
-* We then execute it .
+* We then execute it.
 
 ![redis-server](./images/vagrant-start-redis.png)
 
-* once the redis server is started we start the application with `npm start`.
+* Once the redis server is started we start the application with `npm start`.
 
 ![npm start](./images/vagrant-start-app.png)
 
