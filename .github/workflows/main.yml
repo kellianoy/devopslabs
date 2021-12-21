@@ -15,6 +15,4 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "devops-app-kellian-yann" # Must be unique in Heroku
           heroku_email: "kellian.cottart@edu.ece.fr"
-          appdir: "userapi" # Setting the directory as userapi
-          buildpack: "https://github.com/heroku/heroku-buildpack-nodejs" # Setting the buildpack to NodeJS
           usedocker: true # Can use dockerfile
