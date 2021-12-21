@@ -15,4 +15,4 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "devops-app-kellian-yann" #Must be unique in Heroku
           heroku_email: "kellian.cottart@edu.ece.fr"
-          usedocker: true
+          buildpack: ".github/workflows/main.yml"
