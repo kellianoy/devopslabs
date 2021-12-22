@@ -29,7 +29,7 @@ spec:
       version: v2
 ---
 apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService # Creating a virtual service to do request routing and trafic splitting as well as using the gateway
+kind: VirtualService # Creating a virtual service to do request routing and traffic splitting as well as using the gateway
 metadata:
   name: devops-app-vsc
 spec:
