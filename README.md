@@ -200,8 +200,9 @@ The website is accessible from [here](https://devops-app-kellian-yann.herokuapp.
 ### Installation
 
 To make the Infrastructure as Code (IaC), we downloaded Virtualbox and Vagrant following the steps in their respective tutorials :  
+
   	1. [**Virtualbox tutorial**](https://www.virtualbox.org/wiki/Downloads)
-  	2. [**Vagrant tutorial**](https://www.vagrantup.com/downloads.html)
+	2. [**Vagrant tutorial**](https://www.vagrantup.com/downloads.html)
 
 * We used the vagrant file in the [**assets/part-2**](https://github.com/adaltas/ece-devops-2021-fall/tree/master/courses/devops/modules/03.infrustructure-as-code/assets/part-2) folder and changed the configuration to create a ubuntu box instead of centos/7.
 
