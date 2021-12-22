@@ -282,6 +282,8 @@ vagrant destroy
 
 ![docker build](/images/docker-step1.png)
 
+> Note: If you had an error running docker build, try deleting the package-lock.json in the userapi folder.
+
 * Run the container using `docker run -p 3000:3000 -d yann-kellian-app`
 
 * Check if it works going to `localhost:3000` or by running `docker ps`. Cool, it does.
