@@ -494,7 +494,23 @@ for i in $(seq 1 1000); do curl -s -o /dev/null "http://$GATEWAY_URL/"; done
 
 We created new tags in our docker hub: v1 and v2, to specify which version we were on, testing if it works. Then, we created a second deployment of our app, and a new service. This allows us to have two deployment of the same app with different versions.
 
-To route dynamically to multiple versions of a microservice, we have to add a key component which is called **DestinationRule** inside our `gateway.yaml`.
+To route dynamically to multiple versions of a microservice, we have to add a key component which is called **DestinationRule** inside our [`gateway.yaml`](/istio/gateway.yaml).
+
+```
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule # Creating a destination rule to link each version to a subset, to allow route requesting
+metadata:
+  name: devops-app-destination
+spec:
+  host: devops-app-service
+  subsets: # Creating a subset for each version of our devops-app
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+```
 
 This allows us to link our versions to subsets that are recognized by the **VirtualService**.
 
