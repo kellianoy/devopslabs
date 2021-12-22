@@ -1,0 +1,81 @@
+---
+- hosts: project
+  # Run commands as root
+  become: true
+ 
+  tasks: 
+
+# INSTALLATION
+  - name: Install curl
+    apt:
+      name:
+        - curl
+
+  - name: Install wget
+    apt:
+      name:
+        - wget
+
+  - name: Install tar
+    apt:
+      name:
+        - tar
+
+  - name: Install make
+    apt:
+      name:
+        - make
+
+  - name: Install git
+    apt:
+      name:
+        - git
+
+# REDIS 
+
+  - name: wget redis
+    command: wget http://download.redis.io/redis-stable.tar.gz
+
+  - name: tar redis
+    command: tar xvzf redis-stable.tar.gz
+
+  - name: make redis
+    command: make install
+    args:
+      chdir: redis-stable
+
+# N & NODE
+
+  - name : download n
+    git: 
+      repo: https://github.com/tj/n.git
+      dest: /install/n
+      clone: yes
+
+  - name : make n
+    command: make install
+    args:
+      chdir: /install/n
+
+  - name : get last node
+    command : n lts
+
+# APP
+
+  - name: Install app
+    command: npm install
+    args:
+      chdir: /srv/userapi
+
+
+  - name: start redis
+    command: redis-server 
+    async: 45
+    poll: 0
+
+  - name: start app
+    command: npm start
+    args:
+      chdir: /srv/userapi
+    async: 45
+    poll: 0
