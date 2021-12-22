@@ -1,0 +1,15 @@
+# N & NODE  
+
+- name : download n
+  git: 
+    repo: https://github.com/tj/n.git
+    dest: /install/n
+    clone: yes
+
+- name : make n
+  command: make install
+  args:
+    chdir: /install/n
+
+- name : get last node
+  command : n lts

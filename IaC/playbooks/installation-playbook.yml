@@ -1,0 +1,16 @@
+# INSTALLATION
+
+- name: Install curl
+  apt:
+    name:
+      - curl
+
+- name: Install make
+  apt:
+    name:
+      - make
+
+- name: Install git
+  apt:
+    name:
+      - git

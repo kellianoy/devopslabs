@@ -1,0 +1,25 @@
+---
+- hosts: project
+  # Run commands as root
+  become: yes
+ 
+  tasks: 
+  
+# Including other playbooks
+
+# INSTALLATION
+
+  - include: installation-playbook.yml
+
+# REDIS 
+
+  - include: redis-playbook.yml
+
+# N & NODE
+
+  - include: node-playbook.yml
+
+# APP
+
+  - include: app-playbook.yml
+

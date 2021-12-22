@@ -18,6 +18,9 @@ KUDINOV Sergei
 				- [By a config file](#by-a-config-file)
 				- [CLI](#cli)
 	- [3. Vagrant, IaC](#3-vagrant-iac)
+		- [Installation](#installation)
+		- [Provisionning with Ansible](#provisionning-with-ansible)
+		- [How to run](#how-to-run)
 	- [4. Build a docker image of the web app](#4-build-a-docker-image-of-the-web-app)
 		- [Create the Dockerfile](#create-the-dockerfile)
 		- [Upload the image](#upload-the-image)
@@ -32,13 +35,13 @@ KUDINOV Sergei
 		- [Traffic shifting](#traffic-shifting)
 	- [8. Monitoring](#8-monitoring)
 		- [Kiali](#kiali)
-			- [Installation](#installation)
+			- [Installation](#installation-1)
 			- [Usage](#usage)
 		- [Prometheus](#prometheus)
-			- [Installation](#installation-1)
+			- [Installation](#installation-2)
 			- [Usage](#usage-1)
 		- [Grafana](#grafana)
-			- [Installation](#installation-2)
+			- [Installation](#installation-3)
 			- [Usage](#usage-2)
 
 # Authors
@@ -61,12 +64,13 @@ We will show each and every feature we have done, and the grade that comes with 
 | Orchestration with Docker Compose                               |  DC   |  2/2  |
 | Orchestration with Kubernetes                                   |  KUB  |  3/3  |
 | Service mesh using Istio                                        |  IST  |  2/2  |
-| Infrastructure as code using Ansible                            |  IAC  |  2/3  |
+| Infrastructure as code using Ansible                            |  IAC  |  3/3  |
 | Monitoring                                                      |  MON  |  2/2  |
 | Accurate project documentation in README.md file                |  DOC  |  3/3  |
-| TOTAL FEATURES                                                  |  TOT  | 19/20 |
+| TOTAL FEATURES                                                  |  TOT  | 20/20 |
 | BONUS : Enriching web app with redis auto reconnection and CRUD |  BNS  |  +1   |
 | BONUS : Using Kiali for dashboarding                            |  BNS  |  +1   |
+| BONUS : Using Heroku CLI & Microsoft Azure & Netlify            |  BNS  | +0.5  |
 | TOTAL                                                           |  TOT  | 20/20 |
 
 Now, let's see the full explanation for every part.
@@ -193,51 +197,90 @@ The website is accessible from [here](https://devops-app-kellian-yann.herokuapp.
 
 ## 3. Vagrant, IaC
 
-* To make the Infrastructure as Code (IaC) we downloaded Virtualbox and Vagrant following the steps in their respective tutorial :  [**Virtualbox tutorial**](https://www.virtualbox.org/wiki/Downloads), [**Vagrant tutorial**](https://www.vagrantup.com/downloads.html).
+### Installation
 
-* Then we followed the configuration in the [**lab.mb**](https://github.com/adaltas/ece-devops-2021-fall/blob/master/courses/devops/modules/03.infrustructure-as-code) of lab 3.
+To make the Infrastructure as Code (IaC), we downloaded Virtualbox and Vagrant following the steps in their respective tutorials :  
+  	1. [**Virtualbox tutorial**](https://www.virtualbox.org/wiki/Downloads)
+  	2. [**Vagrant tutorial**](https://www.vagrantup.com/downloads.html)
 
 * We used the vagrant file in the [**assets/part-2**](https://github.com/adaltas/ece-devops-2021-fall/tree/master/courses/devops/modules/03.infrustructure-as-code/assets/part-2) folder and changed the configuration to create a ubuntu box instead of centos/7.
 
-![vagrant box ubuntu](/images/vagrantbox-ubuntu.PNG)
+* We downloaded `bento/ubuntu-20.04` as our ubuntu, that you can find [here](https://app.vagrantup.com/bento/boxes/ubuntu-20.04).
 
-* Using ansible, we can make a installation script, in a playbook, that will download the tools necessary for building the app and then download the dependancies.
+* In `Powershell`, we used the command `vagrant box add bento/ubuntu-20.04` to set it up.
 
-![vagrant redis necessities](/images/vagrant-redis-necessities.PNG)
-![vagrant npm necessities](/images/vagrant-npm-necessities.PNG)
-![vagrant npm dependancies](/images/vagrant-install-app.PNG)
+```
+vagrant box add bento/ubuntu-20.04
+```
 
-* To run the application, it is necessary to have redis downloaded and started. If it isn't, the page will only show that we are not yet connected to redis. we then download the redis files and do make so that the start command become accesible.
+![vagrant-ubuntu](/images/vagrant-ubuntu.png)
 
-![wget,tar,make the redis files](/images/vagrant-wget-tar-make-redis.PNG)
+### Provisionning with Ansible
 
-* We then execute it.
+Using Ansible, we can make a installation script in a playbook that will download the tools necessary for building the app and then download the dependencies. For this, we use five playbooks located in the [playbooks folder](IaC/playbooks/)
 
-![redis-server](/images/vagrant-start-redis.PNG)
+1. We create a shared folder between our app, and the virtual machine to be able to work on the project separately, and not have to provision the machine each time in [Vagrantfile](IaC/Vagrantfile), and we call our [orchestation-playbook.yml](IaC/playbooks/orchestration-playbook.yml).
+   
+![vagrant-sync](/images/vagrant-sync.png)
 
-* Once the redis server is started we start the application with `npm start`.
+2. We install the tools necessary to install redis and node. This includes **curl, make and git** in the [installation-playbook.yml](IaC/playbooks/installation-playbook.yml).
 
-![npm start](/images/vagrant-start-app.PNG)
+![vagrant-installation](/images/vagrant-installation.png)
+
+3. To run the application, it is necessary to have redis downloaded and installed, as well as started. If it isn't, the page will only show that we are not yet connected to redis. We do it using the [redis-playbook.yml](IaC/playbooks/redis-playbook.yml).
+
+![vagrant-redis](/images/vagrant-installation.png)
+
+4. We need to install n, and node to have access to npm and to compile our project. This is located in [node-playbook.yml](IaC/playbooks/node-playbook.yml).
+
+![vagrant-node](/images/vagrant-node.png)
+
+5. Now, we can simply run redis and our project as [Asynchronous tasks][https://docs.ansible.com/ansible/latest/user_guide/playbooks_async.html], running in the background of the vm allowing us to access our application easily. You can find this in [app-playbook.yml](IaC/playbooks/node-playbook.yml).
+
+![vagrant-app](/images/vagrant-app.png)
+
+### How to run
+
+Every step has been completed, we simply have to execute `vagrant up` in the Powershell, at the location of the [`Vagrantfile`](/Iac/Vagrantfile). The VM will setup itself.
+
+![vagrant-up](/images/vagrant-up.png)
+
+To check if the installation was successful, and that everything is well parametered, let's do:
+
+```
+vagrant ssh
+curl localhost:3000
+```
+
+![vagrant-ssh](/images/vagrant-ssh.png)
+
+**We can see that our web application is lauched and that redis is connected ! Congratulations ! It works.**
+
+We can clean up using `vagrant destroy`.
+
+```
+vagrant destroy
+```
 
 ## 4. Build a docker image of the web app
 
 ### Create the Dockerfile
 
-* Write a `Dockerfile` in the main folder of the repository defining the parent image, working dir and instructions to create the image
+* Write a [`Dockerfile`](/Dockerfile) in the main folder of the repository defining the parent image, working dir and instructions to create the image. 
 
-* Write a `.dockerignore` to be sure not to take in unwanted data
+* Write a [`.dockerignore`](/.dockerignore)  to be sure not to take in unwanted data
 
-* Check if the redis connection is set to `"host": "redis"` and `"port": 6379` in `userapi\conf\default.json`. This is only for the container part because local tests need to be run with `"host": "127.0.0.1"`.
+* Check if the redis connection is set to `"host": "redis"` and `"port": 6379` in [`userapi\conf\default.json`](/userapi/conf/default.json). This is only for the container part because local tests need to be run with `"host": "127.0.0.1"`.
 
 * Build the image using `docker build -t yann-kellian-app .`
 
-![docker build](./images/docker-step1.png)
+![docker build](/images/docker-step1.png)
 
 * Run the container using `docker run -p 3000:3000 -d yann-kellian-app`
 
 * Check if it works going to `localhost:3000` or by running `docker ps`. Cool, it does.
 
-![docker build](./images/docker-website.png)
+![docker build](/images/docker-website.png)
 
 > Note: Of course, Redis doesn't work because it is not a docker-compose. For now, it is just our base application.
 
@@ -257,16 +300,16 @@ The website is accessible from [here](https://devops-app-kellian-yann.herokuapp.
 
 ## 5. Docker-compose
 
-* We need to create a `docker-compose.yaml` file to orchestrate our containers. Let's start by writing it with 2 images: 
+* We need to create a [`docker-compose.yaml`](docker-compose.yaml) file to orchestrate our containers. Let's start by writing it with 2 images: 
 	* `redis:alpine` (because it takes less place, and we don't need much of redis) 
 	* The newly-created `devops-project-app` image.
 	* We add a volume named `redis-storage` to store our users.
 	
 * Run `docker-compose up`. Congratulations, it works !
 
-![docker compose up](./images/docker-compose-up.png)
+![docker compose up](/images/docker-compose-up.png)
 
-![docker compose website](./images/docker-compose-website.png)
+![docker compose website](/images/docker-compose-website.png)
 
 > Note: This time, Redis works because we have the two containers communicating with each other.
 
@@ -297,11 +340,11 @@ To begin Kubernetes, Let's install [minikube](https://kubernetes.io/fr/docs/task
 We started by using `Kompose` to convert our `docker-compose.yaml` to Kubernetes deployment / service files. By using the command `kompose up .` and then `kompose convert`, we generated new files allowing to do the same deployment actions that were referred in the docker-compose.
 
 This wasn't satisfactory, but it gave us a good idea of what to have to generate a working cluster. This result didn't allow us to make a persistent data claim, so we had to rework it into a proper deployment. This includes a total of 5 files:
-	* `k8s/web-app-deployment.yaml`, that allows the deployment of one pod of our image
-	* `k8s/web-app-service.yaml`, that allows the service of our app using a loadBalancer to be accessible from our browser
-	* `k8s/redis-deployment.yaml`, that allows the deployment of one pod of Redis
-	* `k8s/redis-service.yaml`, that allows the service of Redis
-	* `k8s/redis-claim.yaml`, that allows the creation of a persistentVolumeClaim to make the link between database and app, and store it.
+	* [`k8s/web-app-deployment.yaml`](/k8s/web-app-deployment.yaml), that allows the deployment of one pod of our image
+	* [`k8s/web-app-service.yaml`](/k8s/web-app-service.yaml), that allows the service of our app using a loadBalancer to be accessible from our browser
+	* [`k8s/redis-deployment.yaml`](/k8s/redis-deployment.yaml), that allows the deployment of one pod of Redis
+	* [`k8s/redis-service.yaml`](/k8s/redis-service.yaml), that allows the service of Redis
+	* [`k8s/redis-claim.yaml`](/k8s/redis-claim.yaml), that allows the creation of a persistentVolumeClaim to make the link between database and app, and store it.
   
 * To apply our files and create our cluster, we used the command `kubectl apply -f k8s/`.
 
@@ -322,7 +365,7 @@ This wasn't satisfactory, but it gave us a good idea of what to have to generate
 ```
 curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "kellianoy", "firstname": "kellian", "lastname":"cottart"}' http://10.100.85.76:3000/user/
 ```
-![kubernetes persistent](./images/kubernetes-persistent.png)
+![kubernetes persistent](/images/kubernetes-persistent.png)
 
 > Note : If you try to do these steps again, you will have a different port number and ip.
 
@@ -416,7 +459,7 @@ After setting up Istio, we have to configure the application to allow outside tr
 1. Gateway
 2. Virtual Service
 
-We created a new file called `gateway.yaml` inside of the istio folder, composed of those two elements, allowing us to create a **LoadBalancer** at the beginning of our mesh.
+We created a new file called [`gateway.yaml`](/istio/gateway.yaml) inside of the [istio folder](/istio/), composed of those two elements, allowing us to create a **LoadBalancer** at the start of our mesh.
 
 To get our gateway url, we can use `minikube tunnel` and in another terminal:
 

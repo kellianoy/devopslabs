@@ -1,0 +1,20 @@
+# APP
+
+- name: Install app
+  command: npm install
+  args:
+    chdir: /srv/userapi
+
+# Running these tasks in the background
+
+- name: start redis
+  command: redis-server 
+  async: 4000
+  poll: 0
+
+- name: start app
+  command: npm start
+  args:
+    chdir: /srv/userapi
+  async: 4000
+  poll: 0

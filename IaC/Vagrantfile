@@ -13,30 +13,30 @@ Vagrant.configure("2") do |config|
   # Define the gitlab_server VM
   config.vm.define "project" do |server|
     # Specify the Vagrant box to use
-    server.vm.box = "ubuntu/trusty64"
+    server.vm.box = "bento/ubuntu-20.04"
     # Specify the VM ip address
     server.vm.network :private_network, ip: "20.20.20.2"
     # Specify the VM specs when using the Virtualbox provisioner
     server.vm.provider "virtualbox" do |vb|
-      vb.name =  "project.local"
+      vb.name =  "devops.yann.kellian"
       # VM RAM in MB
-      vb.memory = 8192
+      vb.memory = 4096
       # VM CPUs
-      vb.cpus = 1
+      vb.cpus = 4
     end
     config.vm.provider "vmware_desktop" do |vmware|
       vmware.vmx["memsize"] = "8192"
       vmware.vmx["numvcpus"] = "1"
     end
   end
+  # Configuring sync folder between our app and VM
   config.vm.synced_folder "../userapi", "/srv/userapi"
-  config.vm.synced_folder ".", "/vagrant"
 
   #config.vm.network guest: 6379, host: 6379 #Port for Redis
   # Use Vagrant Ansible provisioner
   config.vm.provision "ansible_local" do |ansible|
     # The path to the playbooks entry point
-    ansible.playbook = "playbooks/main.yml"
+    ansible.playbook = "playbooks/orchestration-playbook.yml"
     # Only run the roles with these tags
   end
   # Start provisioning
