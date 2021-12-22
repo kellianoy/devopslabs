@@ -49,6 +49,7 @@ KUDINOV Sergei
 We are two students contributing to this project:
 
 | MESSALATI Yann | COTTART Kellian | 
+| :------------- | :-------------: |
 
 We are from Group 1 Inter in ING 4 SI.
 
