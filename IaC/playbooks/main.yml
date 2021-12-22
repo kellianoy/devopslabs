@@ -5,31 +5,7 @@
  
   tasks: 
 
-  
-  - name: Install npm
-    apt:
-      name:
-        - nodejs
-      state: latest
-
-
-#  - name: cat package.json
-#    command: cat package.json
-#    args:
-#      chdir: /srv/userapi
-#    register: command_output
-#  - debug:
-#           var: command_output.stdout_lines
-
-#  - name: cat package.json
-#    command: ls
-#    args:
-#      chdir: /usr/local/bin
-#    register: command_output
-#  - debug:
-#           var: command_output.stdout_lines
-
-
+# INSTALLATION
   - name: Install curl
     apt:
       name:
@@ -39,7 +15,6 @@
     apt:
       name:
         - wget
-    
 
   - name: Install tar
     apt:
@@ -51,45 +26,41 @@
       name:
         - make
 
+  - name: Install git
+    apt:
+      name:
+        - git
+
+# REDIS 
+
   - name: wget redis
     command: wget http://download.redis.io/redis-stable.tar.gz
 
   - name: tar redis
     command: tar xvzf redis-stable.tar.gz
 
- #- name: printf 
- #   command: ls
- #   register: command_output
- # - debug:
- #          var: command_output.stdout_lines
-  #- name: cd redis-stabe
-  #  command: cd redis-stable
-
   - name: make redis
     command: make install
     args:
       chdir: redis-stable
 
-  #- name: go back 
-  #  command: cd ../
-  - name: printf 
-    command: ls
+# N & NODE
+
+  - name : download n
+    git: 
+      repo: https://github.com/tj/n.git
+      dest: /install/n
+      clone: yes
+
+  - name : make n
+    command: make install
     args:
-      chdir: redis-stable/src
-    register: command_output
+      chdir: /install/n
 
-  - debug:
-           var: command_output.stdout_lines
-  
-#  - name: printf 
-#    command: ls
-#    args:
-#      chdir: /srv/userapi
-#    register: command_output
+  - name : get last node
+    command : n lts
 
-#  - debug:
-#           var: command_output.stdout_lines
-  
+# APP
 
   - name: Install app
     command: npm install
@@ -99,15 +70,12 @@
 
   - name: start redis
     command: redis-server 
-    args:
-      chdir: redis-stable/src
     async: 45
-
- 
-
+    poll: 0
 
   - name: start app
     command: npm start
     args:
       chdir: /srv/userapi
     async: 45
+    poll: 0
