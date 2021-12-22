@@ -83,8 +83,12 @@ This web application uses tests that are located inside of the `test` folder.
 This application is the same as in module 04, with all of the "TODO" sections implemented.
 
 * We also added the capacity to see if the connection with the database was succesfully executed by showing a "**redis is connected**" or "**redis not connected**" message on the front page. This was implemented thanks to [zsimo's node redis retry strategy](https://github.com/zsimo/node-redis-retry-strategy).
-  
+
 > https://github.com/zsimo/node-redis-retry-strategy
+
+![docker compose website](/images/docker-compose-website.png)
+
+We can see that we check for redis status, to know whether we're connected or not.
 
 * We brought a prettier eslinter into the project as a dev dependency using:
 
