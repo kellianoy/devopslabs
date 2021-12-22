@@ -230,7 +230,7 @@ Using Ansible, we can make a installation script in a playbook that will downloa
 
 3. To run the application, it is necessary to have redis downloaded and installed, as well as started. If it isn't, the page will only show that we are not yet connected to redis. We do it using the [redis-playbook.yml](IaC/playbooks/redis-playbook.yml).
 
-![vagrant-redis](/images/vagrant-installation.png)
+![vagrant-redis](/images/vagrant-redis.png)
 
 4. We need to install n, and node to have access to npm and to compile our project. This is located in [node-playbook.yml](IaC/playbooks/node-playbook.yml).
 
