@@ -31,6 +31,8 @@ Vagrant.configure("2") do |config|
   end
   config.vm.synced_folder "../userapi", "/srv/userapi"
   config.vm.synced_folder ".", "/vagrant"
+
+  #config.vm.network guest: 6379, host: 6379 #Port for Redis
   # Use Vagrant Ansible provisioner
   config.vm.provision "ansible_local" do |ansible|
     # The path to the playbooks entry point

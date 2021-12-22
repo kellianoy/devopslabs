@@ -12,10 +12,34 @@
         - nodejs
       state: latest
 
+
+#  - name: cat package.json
+#    command: cat package.json
+#    args:
+#      chdir: /srv/userapi
+#    register: command_output
+#  - debug:
+#           var: command_output.stdout_lines
+
+#  - name: cat package.json
+#    command: ls
+#    args:
+#      chdir: /usr/local/bin
+#    register: command_output
+#  - debug:
+#           var: command_output.stdout_lines
+
+
+  - name: Install curl
+    apt:
+      name:
+        - curl
+
   - name: Install wget
     apt:
       name:
         - wget
+    
 
   - name: Install tar
     apt:
@@ -33,16 +57,16 @@
   - name: tar redis
     command: tar xvzf redis-stable.tar.gz
 
-  - name: printf 
-    command: ls
-    register: command_output
-  - debug:
-           var: command_output.stdout_lines
+ #- name: printf 
+ #   command: ls
+ #   register: command_output
+ # - debug:
+ #          var: command_output.stdout_lines
   #- name: cd redis-stabe
   #  command: cd redis-stable
 
   - name: make redis
-    command: make
+    command: make install
     args:
       chdir: redis-stable
 
@@ -56,11 +80,16 @@
 
   - debug:
            var: command_output.stdout_lines
+  
+#  - name: printf 
+#    command: ls
+#    args:
+#      chdir: /srv/userapi
+#    register: command_output
 
-  - name: start redis
-    command: redis-server
-    args:
-      chdir: redis-stable/src
+#  - debug:
+#           var: command_output.stdout_lines
+  
 
   - name: Install app
     command: npm install
@@ -68,7 +97,17 @@
       chdir: /srv/userapi
 
 
+  - name: start redis
+    command: redis-server 
+    args:
+      chdir: redis-stable/src
+    async: 45
+
+ 
+
+
   - name: start app
     command: npm start
     args:
       chdir: /srv/userapi
+    async: 45
